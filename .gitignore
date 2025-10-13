@@ -1,0 +1,17 @@
+# data (don’t commit big rasters or intermediates)
+data/raw/
+data/interim/
+data/composites/
+data/change/
+*.tif
+*.tiff
+*.nc
+*.zip
+*.SAFE
+
+# environment & cache
+.env
+.venv
+__pycache__/
+.ipynb_checkpoints/
+.DS_Store
