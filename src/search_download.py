@@ -27,7 +27,7 @@ def search_items(aoi_geojson, start, end, max_cloud=25):
         datetime=f"{start}/{end}",
         query={"eo:cloud_cover": {"lt": max_cloud}},
     )
-    items = list(search.get_items())
+    items = list(search.items())
     items = [pc.sign(it) for it in items]  # sign for MPC access
     return items
 
@@ -38,7 +38,7 @@ def stack_for_year(items, aoi_gdf, bands=("B04","B08","SCL"), resolution=10):
         resolution=resolution,
         chunksize=2048,
         dtype="float32",
-        fill_value=np.nan
+        fill_value=np.nan,
         rescale=True
 
     )
