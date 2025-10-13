@@ -3,8 +3,8 @@ import json
 import pathlib as pl
 import numpy as np
 import xarray as xr
-import geopandas as gpd
 import rioxarray
+import geopandas as gpd
 from pystac_client import Client
 import planetary_computer as pc
 import stackstac as st
@@ -37,33 +37,32 @@ def stack_for_year(items, aoi_gdf, bands=("B04", "B08", "SCL"), resolution=10):
     utm = aoi_gdf.estimate_utm_crs()
     target_epsg = utm.to_epsg() if utm else 4326
 
-    # Limit reads to your AOI in the target CRS
+    # Limit reads to AOI in that CRS (improves performance, fixes common-CRS issues)
     aoi_in_target = aoi_gdf.to_crs(target_epsg)
     minx, miny, maxx, maxy = aoi_in_target.total_bounds
 
     stack = st.stack(
         items,
-        assets=list(bands),               # <-- FIX: pass a list, not a tuple
-        epsg=target_epsg,                # ensure common output CRS
-        bounds=(minx, miny, maxx, maxy), # constrain to AOI
+        assets=list(bands),               # list, not tuple
+        epsg=target_epsg,                # <-- IMPORTANT
+        bounds=(minx, miny, maxx, maxy), # <-- IMPORTANT
         resolution=resolution,           # 10 m if UTM; degrees if 4326 fallback
         chunksize=2048,
-        dtype="float64",                 # allows NaN fill
-        fill_value=np.nan,               # safe nodata for later math
-        rescale=False                    # scale to reflectance in compute_ndvi()
+        dtype="float64",
+        fill_value=np.nan,
+        rescale=False
     )
-
-    # Safety clip (already bounded above, but fine to keep)
-    stack = stack.rio.clip(aoi_in_target.geometry, aoi_in_target.crs, drop=True)
     return stack
+
 def main():
     aoi_gdf, aoi_geojson = load_aoi("data/aoi/roi.geojson")
     outdir = pl.Path("data/interim"); outdir.mkdir(parents=True, exist_ok=True)
-    years = [2019, 2020, 2021, 2022, 2023, 2024]
+    years = [2019]
 
     for y in years:
         start, end = yearly_window(y, 6, 9)
         items = search_items(aoi_geojson, start, end, max_cloud=25)
+        print(f"Found {len(items)} scenes between {start} and {end}")
         if not items:
             print(f"No scenes for {y}")
             continue
