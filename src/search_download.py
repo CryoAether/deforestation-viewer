@@ -4,6 +4,7 @@ import pathlib as pl
 import numpy as np
 import xarray as xr
 import geopandas as gpd
+import rioxarray
 from pystac_client import Client
 import planetary_computer as pc
 import stackstac as st
@@ -31,21 +32,30 @@ def search_items(aoi_geojson, start, end, max_cloud=25):
     items = [pc.sign(it) for it in items]  # sign for MPC access
     return items
 
-def stack_for_year(items, aoi_gdf, bands=("B04","B08","SCL"), resolution=10):
+def stack_for_year(items, aoi_gdf, bands=("B04", "B08", "SCL"), resolution=10):
+    # Use a metric CRS (UTM) so resolution=10 means 10 meters
+    utm = aoi_gdf.estimate_utm_crs()
+    target_epsg = utm.to_epsg() if utm else 4326
+
+    # Limit reads to your AOI in the target CRS
+    aoi_in_target = aoi_gdf.to_crs(target_epsg)
+    minx, miny, maxx, maxy = aoi_in_target.total_bounds
+
     stack = st.stack(
         items,
-        assets=bands,
-        resolution=resolution,
+        assets=list(bands),               # <-- FIX: pass a list, not a tuple
+        epsg=target_epsg,                # ensure common output CRS
+        bounds=(minx, miny, maxx, maxy), # constrain to AOI
+        resolution=resolution,           # 10 m if UTM; degrees if 4326 fallback
         chunksize=2048,
-        dtype="uint16",
-        fill_value=np.nan,
-        rescale=False
-
+        dtype="float64",                 # allows NaN fill
+        fill_value=np.nan,               # safe nodata for later math
+        rescale=False                    # scale to reflectance in compute_ndvi()
     )
-    aoi_gdf = aoi_gdf.to_crs(stack.rio.crs)
-    stack = stack.rio.clip(aoi_gdf.geometry, aoi_gdf.crs, drop=True)
-    return stack  # dims: time, band, y, x
 
+    # Safety clip (already bounded above, but fine to keep)
+    stack = stack.rio.clip(aoi_in_target.geometry, aoi_in_target.crs, drop=True)
+    return stack
 def main():
     aoi_gdf, aoi_geojson = load_aoi("data/aoi/roi.geojson")
     outdir = pl.Path("data/interim"); outdir.mkdir(parents=True, exist_ok=True)

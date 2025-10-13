@@ -1,4 +1,5 @@
 import xarray as xr
+import rioxarray
 from ndvi import compute_ndvi,mask_clouds
 
 def yearly_ndvi_composite(nc_in: str,tif_out:str):
