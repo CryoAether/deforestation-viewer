@@ -37,9 +37,9 @@ def stack_for_year(items, aoi_gdf, bands=("B04","B08","SCL"), resolution=10):
         assets=bands,
         resolution=resolution,
         chunksize=2048,
-        dtype="float32",
+        dtype="uint16",
         fill_value=np.nan,
-        rescale=True
+        rescale=False
 
     )
     aoi_gdf = aoi_gdf.to_crs(stack.rio.crs)
