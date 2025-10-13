@@ -42,4 +42,17 @@ def stack_for_year(items,aoi_gdf, bands=("B04","B08","SCL"), resolution=10):
     return stack # dims: time, band, y, x
 def main():
     aoi_gdf, aoi_geojson=load_aoi("data/aoi/roi.geojson")
-    outdir=
+    outdir=plxPath("data/interim");outdirxmkdir(parents=True,exist_ok=True)
+    years =[2019,2020,2021,2022,2023,2024]
+
+    for y in years:
+        start, end = yearly_window(y,6,9)
+        items=search_items(aoi_geojson,start,end,max_cloud=25)
+        if not items:
+            print(f"No scenes for {y}")
+            continue
+        stack=stack_for_year(items,aoi_gdf)
+        stack.to_netcdf(outdir / f"s2_stac_{y}.nc")
+        print(f"Saved data/interim/s2_stack_{y}.nc")
+if __name__ == "__main__":
+    main()
