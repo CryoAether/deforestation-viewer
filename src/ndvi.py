@@ -1,6 +1,6 @@
 import numpy as np
 
-SCL_CLOUD_MASK = {3, 8, 9, 10}  # shadow, cloud, cloud, cirrus
+SCL_CLOUD_MASK = {3, 6, 7, 8, 9, 10, 11}  # shadow, water, unclassified, cloud, cloud, cirrus, snow/ice
 
 def compute_ndvi(red, nir):
     red = red.astype("float32") / 10000.0
@@ -8,5 +8,5 @@ def compute_ndvi(red, nir):
     return (nir - red) / (nir + red + 1e-6)
 
 def mask_clouds(scl, arr):
-    scl_i = scl.round().astype("int16")
+    scl_i = scl.round().astype("int16")  # ensure categorical ints
     return arr.where(~np.isin(scl_i, list(SCL_CLOUD_MASK)))
