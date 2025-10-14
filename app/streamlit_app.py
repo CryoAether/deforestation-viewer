@@ -29,9 +29,8 @@ raster_path = str(tif if tif.exists() else tiff)
 
 m = leafmap.Map(center=[0, 0], zoom=2, draw_control=False, measure_control=False)
 m.add_basemap("HYBRID")
-m.add_raster(raster_path, cmap="viridis", opacity=0.85, layer_name=f"NDVI {year}")
-m.add_colormap(colors="viridis", vmin=-0.1, vmax=0.9, label="NDVI")
-
+m.add_raster(raster_path, colormap="viridis", opacity=0.85, layer_name=f"NDVI {year}")
+m.add_colormap(cmap="viridis", vmin=-0.1, vmax=0.9, label="NDVI")
 try:
     m.zoom_to_bounds(m.get_bounds(raster_path))
 except Exception:
