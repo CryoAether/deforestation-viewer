@@ -97,7 +97,7 @@ def main():
         ndvi_t = mask_clouds(scl, ndvi_t)
 
         ndvi_t = ndvi_t.chunk({"time": 1, "y": 1024, "x": 1024})
-        ndvi_med = ndvi_t.median(dim="time", skipna=True)
+        ndvi_med = ndvi_t.max(dim="time", skipna=True)
         ndvi_med = ndvi_med.where(np.isfinite(ndvi_med))
 
         out_tif = outdir / f"ndvi_median_{y}.tif"
