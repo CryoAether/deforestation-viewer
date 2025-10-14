@@ -2,13 +2,21 @@ import pathlib as pl
 import streamlit as st
 import leafmap.foliumap as leafmap
 
+
 st.set_page_config(layout="wide", page_title="Deforestation NDVI Viewer")
 st.title("Deforestation NDVI Viewer (Yearly Median)")
 
-comp_dir = pl.Path("../data/composites")
-years = sorted(int(p.stem.split("_")[-1]) for p in comp_dir.glob("ndvi_median_*.tif"))
+BASE_DIR = pl.Path(__file__).resolve().parents[1]
+COMP_DIR = BASE_DIR / "data" / "composites"
+
 if not years:
-    st.warning("No composites found. Run the preprocessing pipeline first.")
+    st.warning("No composites found.")
+    st.write(f"Looked in: `{COMP_DIR}`")
+    st.write("Directory contents:")
+    if COMP_DIR.exists():
+        st.write([p.name for p in COMP_DIR.iterdir()])
+    else:
+        st.write("(directory does not exist)")
     st.stop()
 
 year = st.slider("Year", min_value=min(years), max_value=max(years), value=min(years), step=1)
