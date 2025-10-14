@@ -1,31 +1,33 @@
 name: deforest
 channels:
   - conda-forge
+channel_priority: strict
+
 dependencies:
   - python=3.11
+  - numpy
+  - pandas
+  - xarray
+  - dask
   - gdal
   - rasterio
   - rioxarray
-  - xarray
-  - dask
-  - numpy
-  - pandas
   - geopandas
   - shapely
   - pyproj
   - fiona
-  - scikit-image
-  - scikit-learn
-  - matplotlib
+  - rio-cogeo
+  - folium
+  - streamlit
+  - leafmap
+  - localtileserver
+  - large-image
+  - large-image-source-gdal
+  - fastapi
+  - uvicorn
   - pip
   - pip:
       - opencv-python-headless
       - pystac-client
       - planetary-computer
       - stackstac
-      - folium
-      - leafmap
-      - rio-cogeo
-      - fastapi
-      - uvicorn
-      - streamlit
