@@ -1,6 +1,7 @@
 import numpy as np
 
-SCL_CLOUD_MASK = {3, 6, 7, 8, 9, 10, 11}  # shadow, water, unclassified, cloud, cloud, cirrus, snow/ice
+# shadow, water, unclassified, cloud, cloud, cirrus, snow/ice
+SCL_CLOUD_MASK = {3, 6, 7, 8, 9, 10, 11}  
 
 def compute_ndvi(red, nir):
     red = red.astype("float32") / 10000.0
