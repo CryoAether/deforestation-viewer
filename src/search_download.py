@@ -58,8 +58,7 @@ def stack_for_year(items, aoi_gdf, bands=("B04","B08","SCL"), resolution=30):
         bounds=(minx, miny, maxx, maxy),  # limit to AOI
         resolution=resolution,            # 30 m if UTM
         chunksize=2048,
-        dtype="float32",
-        fill_value=np.nan,
+        fill_value=0,
         rescale=False
     )
     stack = stack.chunk({"time": 1, "y": 1024, "x": 1024})
