@@ -1,5 +1,5 @@
 # src/search_download.py
-from datetime import date
+from datetime import date, timedelta
 import json
 import os
 import pathlib as pl
@@ -23,8 +23,17 @@ COLLECTION = "sentinel-2-l2a"
 
 # throttle: set MAX_SCENES=None to process all
 _env = os.getenv("MAX_SCENES", "12").lower() #Testing phase, low value for quick results
+#new
+WINDOW_WEEKS = int(os.getenv("WINDOW_WEEKS", "8"))
+WINDOW_START_MONTH = int(os.getenv("WINDOW_START_MONTH", "7"))  # 7 = July
+WINDOW_START_DAY = int(os.getenv("WINDOW_START_DAY", "1"))
 _env_norm = (_env or "").strip().lower()
 MAX_SCENES = None if _env_norm in ("none", "") else int(_env_norm)
+#new
+def seasonal_window(year: int, start_month: int = 7, start_day: int = 1, weeks: int = 8):
+    start = date(year, start_month, start_day)
+    end = start + timedelta(weeks=weeks) - timedelta(days=1)
+    return (start, end)
 
 def load_aoi(path="data/aoi/roi.geojson"):
     gdf = gpd.read_file(path)
@@ -79,9 +88,14 @@ def main():
     outdir = pl.Path("data/composites")
     outdir.mkdir(parents=True, exist_ok=True)
 
-    years = [2019] #: 2020, 2021, 2022, 2023, 2024
+    years = [2020] #: 2020, 2021, 2022, 2023, 2024
     for y in tqdm(years,desc="Years"): #progress bar over years
-        start, end = yearly_window(y, 6, 9)
+        start, end = seasonal_window(
+            y,
+            start_month=WINDOW_START_MONTH,
+            start_day=WINDOW_START_DAY,
+            weeks=WINDOW_WEEKS
+        )
         print(f"[{y}] Searching items {start} → {end} (cloud<25%) ...")
         items = search_items(aoi_geojson, start, end, max_cloud=25)
         print(f" [{y}] Found {len(items)} scenes")
