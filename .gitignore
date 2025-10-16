@@ -4,6 +4,11 @@ data/interim/
 data/composites/
 data/change/
 data/composites/-old
+data/aoi/*.shp
+data/aoi/*.shx
+data/aoi/*.dbf
+data/aoi/*.prj
+data/aoi/*.cpg
 *.tif
 *.tiff
 *.nc
