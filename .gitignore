@@ -3,6 +3,7 @@ data/raw/
 data/interim/
 data/composites/
 data/change/
+data/composites/-old
 *.tif
 *.tiff
 *.nc

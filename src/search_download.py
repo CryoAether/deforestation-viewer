@@ -20,7 +20,7 @@ CATALOG = "https://planetarycomputer.microsoft.com/api/stac/v1"
 COLLECTION = "sentinel-2-l2a"
 
 # throttle: set MAX_SCENES=None to process all
-_env = os.getenv("MAX_SCENES", "12").lower() #Testing phase, use less than 20
+_env = os.getenv("MAX_SCENES", "12").lower() #Testing phase, low value for quick results
 _env_norm = (_env or "").strip().lower()
 MAX_SCENES = None if _env_norm in ("none", "") else int(_env_norm)
 
@@ -53,7 +53,7 @@ def stack_for_year(items, aoi_gdf, bands=("B04","B08","SCL"), resolution=30):
 
     stack = st.stack(
         items,
-        assets=list(bands),                # list (not tuple)
+        assets=list(bands),               
         epsg=target_epsg,                 # common grid (UTM)
         bounds=(minx, miny, maxx, maxy),  # limit to AOI
         resolution=resolution,            # 30 m if UTM
@@ -70,7 +70,7 @@ def main():
     outdir = pl.Path("data/composites")
     outdir.mkdir(parents=True, exist_ok=True)
 
-    years = [2019, 2020, 2021, 2022, 2023, 2024]
+    years = [2019] #, 2020, 2021, 2022, 2023, 2024
     for y in years:
         start, end = yearly_window(y, 6, 9)
         items = search_items(aoi_geojson, start, end, max_cloud=25)
