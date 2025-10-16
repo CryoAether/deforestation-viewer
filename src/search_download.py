@@ -62,12 +62,22 @@ def search_items(aoi_geojson, start, end, max_cloud=25):
     print(f"After best-per-day-per-tile filter: {len(items)} scenes")
     # Keep only the most frequent (dominant) 1–2 tiles
     
-    tiles = [it.properties["s2:mgrs_tile"] for it in items]
-    tile_counts = Counter(tiles)
-    top_tiles = {t for t, _ in tile_counts.most_common(1)}   # change to 2 for two tiles
-
-    items = [it for it in items if it.properties["s2:mgrs_tile"] in top_tiles]
+    tiles = sorted({it.properties["s2:mgrs_tile"] for it in items})
+    print(f"Keeping all tiles overlapping AOI: {tiles}")
+    
     print(f"Keeping tiles {sorted(top_tiles)} → {len(items)} scenes after tile filter")
+    items.sort(key=lambda it: it.datetime)  # chronological
+    filtered = []
+    last_for_tile = {}
+    DAY_GAP = int(os.getenv("DAY_GAP", "10"))  # days between scenes per tile
+    for it in items:
+        tile = it.properties["s2:mgrs_tile"]
+        d = it.datetime.date()
+        if tile not in last_for_tile or (d - last_for_tile[tile]).days >= DAY_GAP:
+            filtered.append(it)
+            last_for_tile[tile] = d
+    print(f"After {DAY_GAP}-day subsample: {len(filtered)} scenes")
+    items = filtered
     return items
 
 def stack_for_year(items, aoi_gdf, bands=("B04","B08","SCL"), resolution=30):
@@ -96,7 +106,7 @@ def main():
     outdir = pl.Path("data/composites")
     outdir.mkdir(parents=True, exist_ok=True)
 
-    years = [2020] #: 2020, 2021, 2022, 2023, 2024
+    years = [2020,2021,2022,2023,2024] #: 2020, 2021, 2022, 2023, 2024
     for y in tqdm(years,desc="Years"): #progress bar over years
         start, end = seasonal_window(
             y,
