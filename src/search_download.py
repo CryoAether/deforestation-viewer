@@ -12,9 +12,11 @@ import planetary_computer as pc
 import stackstac as st
 import dask
 from dask.diagnostics import ProgressBar
+from tqdm.auto import tqdm
 from ndvi import compute_ndvi, mask_clouds
 
-dask.config.set(scheduler="threads", num_workers=6)  # tune 4–8 depending on heat
+dask.config.set(scheduler="threads", num_workers=6)
+ProgressBar().register()
 
 CATALOG = "https://planetarycomputer.microsoft.com/api/stac/v1"
 COLLECTION = "sentinel-2-l2a"
@@ -70,32 +72,38 @@ def main():
     outdir = pl.Path("data/composites")
     outdir.mkdir(parents=True, exist_ok=True)
 
-    years = [2019] #, 2020, 2021, 2022, 2023, 2024
-    for y in years:
+    years = [2019] #: 2020, 2021, 2022, 2023, 2024
+    for y in tqdm(years,desc="Years"): #progress bar over years
         start, end = yearly_window(y, 6, 9)
+        print(f"[{y}] Searching items {start} → {end} (cloud<25%) ...")
         items = search_items(aoi_geojson, start, end, max_cloud=25)
-        print(f"Found {len(items)} scenes between {start} and {end} for {y}")
+        print(f" [{y}] Found {len(items)} scenes")
 
         if not items:
             print(f"No scenes for {y}; skipping.")
             continue
-
+        
         if isinstance(MAX_SCENES, int) and MAX_SCENES > 0 and len(items) > MAX_SCENES:
             items = items[:MAX_SCENES]
             print(f"Throttling to first {MAX_SCENES} scenes for speed...")
-
+        print(f"[{y}] Building stack at 30m and clipping to AOI ...")
         stack = stack_for_year(items, aoi_gdf)
+        print(f"[{y}] Stack ready: {tuple(stack.sizes.get(k) for k in ['time','y','x'])} (time, y, x)")
+
         red = stack.sel(band="B04")
         nir = stack.sel(band="B08")
         scl = stack.sel(band="SCL")
 
+        print(f"[{y}] Masking nodata (zeros) ...")
         nodata = (red ==0) | (nir==0)
         red = red.where(~nodata)
         nir = nir.where(~nodata)
 
+        print(f"[{y}] Computing NDVI + cloud/snow/water mask …")
         ndvi_t = compute_ndvi(red, nir)
         ndvi_t = mask_clouds(scl, ndvi_t)
 
+        print(f"[{y}] Reducing to seasonal composite (max over time) …")
         ndvi_t = ndvi_t.chunk({"time": 1, "y": 1024, "x": 1024})
         ndvi_med = ndvi_t.max(dim="time", skipna=True)
         ndvi_med = ndvi_med.where(np.isfinite(ndvi_med))
@@ -104,8 +112,8 @@ def main():
         ndvi_med.rio.write_crs(nir.rio.crs, inplace=True)
         ndvi_med.rio.write_transform(nir.rio.transform(), inplace=True)
         
-        with ProgressBar(): #progress bar
-            ndvi_med.rio.to_raster(out_tif, driver="COG", compress="DEFLATE", dtype="float32")
+        print(f"[{y}] Writing COG → {out_tif} …")  
+        ndvi_med.rio.to_raster(out_tif, driver="COG", compress="DEFLATE", dtype="float32")
         print(f"Saved {out_tif}")
 
     print("Done.")
