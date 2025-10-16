@@ -44,6 +44,13 @@ def search_items(aoi_geojson, start, end, max_cloud=25):
     )
     items = list(search.items())
     items = [pc.sign(it) for it in items]
+    by_key = {}
+    for it in items:
+        key = (it.properties["s2:mgrs_tile"], it.datetime.date())
+        if key not in by_key or it.properties["eo:cloud_cover"] < by_key[key].properties["eo:cloud_cover"]:
+            by_key[key] = it
+    items = list(by_key.values())
+    print(f"After best-per-day-per-tile filter: {len(items)} scenes")
     return items
 
 def stack_for_year(items, aoi_gdf, bands=("B04","B08","SCL"), resolution=30):
