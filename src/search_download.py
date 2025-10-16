@@ -14,6 +14,7 @@ import dask
 from dask.diagnostics import ProgressBar
 from tqdm.auto import tqdm
 from ndvi import compute_ndvi, mask_clouds
+from collections import Counter
 
 dask.config.set(scheduler="threads", num_workers=6)
 ProgressBar().register()
@@ -40,8 +41,7 @@ def load_aoi(path="data/aoi/roi.geojson"):
     gdf = gdf.to_crs(epsg=4326)
     return gdf, json.loads(gdf.to_json())
 
-def yearly_window(year: int, start_month=6, end_month=9):
-    return (date(year, start_month, 1), date(year, end_month, 30))
+
 
 def search_items(aoi_geojson, start, end, max_cloud=25):
     client = Client.open(CATALOG)
@@ -60,6 +60,14 @@ def search_items(aoi_geojson, start, end, max_cloud=25):
             by_key[key] = it
     items = list(by_key.values())
     print(f"After best-per-day-per-tile filter: {len(items)} scenes")
+    # Keep only the most frequent (dominant) 1–2 tiles
+    
+    tiles = [it.properties["s2:mgrs_tile"] for it in items]
+    tile_counts = Counter(tiles)
+    top_tiles = {t for t, _ in tile_counts.most_common(1)}   # change to 2 for two tiles
+
+    items = [it for it in items if it.properties["s2:mgrs_tile"] in top_tiles]
+    print(f"Keeping tiles {sorted(top_tiles)} → {len(items)} scenes after tile filter")
     return items
 
 def stack_for_year(items, aoi_gdf, bands=("B04","B08","SCL"), resolution=30):
