@@ -1,4 +1,5 @@
 # data (don’t commit big rasters or intermediates)
+src/legacy/
 data/raw/
 data/interim/
 data/composites/
@@ -9,6 +10,9 @@ data/aoi/*.shx
 data/aoi/*.dbf
 data/aoi/*.prj
 data/aoi/*.cpg
+__pycache__/
+
+*.pyc
 *.tif
 *.tiff
 *.nc
