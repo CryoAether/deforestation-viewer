@@ -44,9 +44,16 @@ MAX_SCENES=None MAX_CLOUD=80 WINDOW_WEEKS=8 DAY_GAP=10 python src/search_downloa
 ```bash
 streamlit run app.py
 ```
+## 🚀 Examples
+
+### Year   Description
+    1990   Dense vegetation, minimal disturbance
+    2005   Visible clearing in north region
+    2020   Sharp NDVI drop from deforestation
 
 <p align="center">
   <img src="docs/ndvi_comparison.png" width="600" alt="NDVI Comparison"/>
 </p>
+
 
 
