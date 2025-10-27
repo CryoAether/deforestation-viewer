@@ -36,8 +36,13 @@ conda activate deforest
 pip install -r requirements.txt
 ```
 ### 2. Run NDVI Processing
-```MAX_SCENES=None MAX_CLOUD=80 WINDOW_WEEKS=8 DAY_GAP=10 python src/search_download.py```
+```bash
+MAX_SCENES=None MAX_CLOUD=80 WINDOW_WEEKS=8 DAY_GAP=10 python src/search_download.py
+```
 
 ### 3. Launch the Streamlit app for viewing
-```streamlit run app.py```
+```bash
+streamlit run app.py
+```
+
 
