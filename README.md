@@ -45,4 +45,8 @@ MAX_SCENES=None MAX_CLOUD=80 WINDOW_WEEKS=8 DAY_GAP=10 python src/search_downloa
 streamlit run app.py
 ```
 
+<p align="center">
+  <img src="docs/ndvi_comparison.png" width="600" alt="NDVI Comparison"/>
+</p>
+
 
