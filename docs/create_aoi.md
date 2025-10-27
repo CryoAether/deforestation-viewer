@@ -85,7 +85,7 @@ print(gdf.crs, gdf.total_bounds)
 Output should show:
 EPSG:4326 and reasonable longitude/latitude bounds.
 
-##⚙️ 6. Run the NDVI Pipeline
+## ⚙️ 6. Run the NDVI Pipeline
 Once your AOI is ready, you can process all available imagery:
 ```MAX_SCENES=None MAX_CLOUD=80 WINDOW_WEEKS=8 DAY_GAP=10 python src/search_download.py```
 The script will:
@@ -93,7 +93,7 @@ The script will:
 	•	Compute NDVI composites per year.
 	•	Save them in: `data/composites/ndvi_median_<YEAR>.tif`
 
-#🧩 7. Troubleshooting
+# 🧩 7. Troubleshooting
 
 | **Issue** | **Likely Cause** | **Fix** |
 |------------|------------------|----------|
