@@ -95,6 +95,19 @@ The script will:
 	•	Save them in: 
 	`data/composites/ndvi_median_<YEAR>.tif`
 
+# ⚙️ Environment Variables (Customize Processing)
+You can control how the NDVI pipeline runs by setting environment variables directly in your terminal before executing search_download.py.
+These variables determine which imagery is downloaded, how cloudy scenes are filtered, and how the processing window is defined.
+
+| **Variable** | **Purpose** | **Example** | **Detailed Explanation** |
+|---------------|-------------|--------------|----------------------------|
+| `MAX_SCENES` | Limit the number of satellite scenes per year | `MAX_SCENES=10` | Restricts how many images are processed to save time. Use `None` for all available scenes (recommended for final runs). |
+| `MAX_CLOUD` | Maximum acceptable cloud cover (in %) | `MAX_CLOUD=60` | Filters out images with more than the specified cloud coverage. Lower values give cleaner NDVI results but may reduce data availability. |
+| `WINDOW_WEEKS` | Defines the time window (in weeks) of imagery to use | `WINDOW_WEEKS=12` | Controls the length of the seasonal window for each year. For example, `12` means ~3 months of data — ideal for a “growing season.” |
+| `WINDOW_START_MONTH` | Month to start the analysis (1–12) | `WINDOW_START_MONTH=6` | Determines the starting month of the time window. For example, `6` starts in **June**. |
+| `WINDOW_START_DAY` | Day of the starting month (1–31) | `WINDOW_START_DAY=15` | Sets the day within the starting month. Combine with the above two for full date control (e.g., June 15). |
+| `DAY_GAP` | Minimum days between selected scenes | `DAY_GAP=10` | Prevents redundant images captured within a short time span from being included. A higher gap means fewer, more distinct images. |
+
 # 🧩 7. Troubleshooting
 
 | **Issue** | **Likely Cause** | **Fix** |
