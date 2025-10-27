@@ -1,18 +1,20 @@
-# app/streamlit_app.py
 import pathlib as pl
 import streamlit as st
 import leafmap.foliumap as leafmap
-import geopandas as gpd
-import rioxarray as rxr
 import numpy as np
+import rioxarray as rxr
+import geopandas as gpd
 
-st.set_page_config(layout="wide", page_title="Deforestation Viewer (1985–2024)")
+st.set_page_config(layout="wide", page_title="Deforestation Viewer")
 st.title("Deforestation Viewer (1985–2024)")
 
+# --- Paths ---
 BASE_DIR = pl.Path(__file__).resolve().parents[1]
 COMP_DIR = BASE_DIR / "data" / "composites"
+CHANGE_DIR = BASE_DIR / "data" / "change"
+CHANGE_DIR.mkdir(parents=True, exist_ok=True)
 
-# Find all composites we actually have
+# Discover composites
 files = sorted(list(COMP_DIR.glob("ndvi_median_*.tif")) + list(COMP_DIR.glob("ndvi_median_*.tiff")))
 years = sorted({int(p.stem.split("_")[-1]) for p in files})
 
@@ -21,65 +23,100 @@ if not years:
     st.write(f"Looked in: `{COMP_DIR}`")
     st.stop()
 
-# Two selectors: Left year and Right year
-c1, c2 = st.columns(2)
-with c1:
-    left_year = st.selectbox("Left year", years, index=0)
-with c2:
-    right_year = st.selectbox("Right year", years, index=len(years)-1)
-
-# Resolve file paths
-def composite_path(y: int) -> pl.Path:
-    p_tif = COMP_DIR / f"ndvi_median_{y}.tif"
-    p_tiff = COMP_DIR / f"ndvi_median_{y}.tiff"
-    return p_tif if p_tif.exists() else p_tiff
-
-left_path = composite_path(left_year)
-right_path = composite_path(right_year)
-
-missing = [y for y, p in [(left_year, left_path), (right_year, right_path)] if not p.exists()]
-if missing:
-    st.error(f"Missing composites for: {missing}. Looked in `{COMP_DIR}`.")
-    st.stop()
-
-# Center the map on AOI centroid if present, else a sane default
-center = [0.0, 0.0]
+# AOI centroid for sensible map start
 try:
-    aoi = gpd.read_file(BASE_DIR / "data" / "aoi" / "roi.geojson").to_crs(4326)
-    c = aoi.geometry.centroid.unary_union
-    center = [float(c.y), float(c.x)]
+    aoi = gpd.read_file(BASE_DIR / "data" / "aoi" / "roi.geojson")
+    center = [aoi.geometry.centroid.y.mean(), aoi.geometry.centroid.x.mean()]
 except Exception:
-    pass
+    center = [0, 0]
+
+# --- Helpers ---
+def ndvi_path(y: int) -> pl.Path:
+    tif = COMP_DIR / f"ndvi_median_{y}.tif"
+    tiff = COMP_DIR / f"ndvi_median_{y}.tiff"
+    return tif if tif.exists() else tiff
+
+def open_ndvi(y: int):
+    p = ndvi_path(y)
+    da = rxr.open_rasterio(str(p)).squeeze()
+    return da
+
+def write_delta_tif(y1: int, y2: int) -> pl.Path:
+    out = CHANGE_DIR / f"ndvi_delta_{y1}_{y2}.tif"
+    if out.exists():
+        return out
+    ndvi1 = open_ndvi(y1)
+    ndvi2 = open_ndvi(y2)
+    # align grids if needed
+    if not (ndvi2.rio.crs == ndvi1.rio.crs and ndvi2.rio.transform() == ndvi1.rio.transform()):
+        ndvi2 = ndvi2.rio.reproject_match(ndvi1)
+    delta = (ndvi2 - ndvi1)
+    # set nodata explicitly so tiles are transparent
+    delta = delta.rio.write_nodata(-9999, inplace=False).fillna(-9999)
+    delta = delta.rio.write_crs(ndvi1.rio.crs, inplace=False)
+    delta.rio.to_raster(out, driver="COG", compress="DEFLATE")
+    return out
+
+def robust_delta_range(delta_path: pl.Path):
+    da = rxr.open_rasterio(str(delta_path)).squeeze()
+    vals = da.values
+    mask = np.isfinite(vals) & (vals != -9999)
+    if mask.any():
+        p2, p98 = np.percentile(vals[mask], [2, 98])
+        mx = float(max(abs(p2), abs(p98), 0.05))
+        return (-mx, mx)
+    return (-0.3, 0.3)
+
+# --- UI Mode ---
+mode = st.radio("Mode", ["View single year", "Compare change (ΔNDVI)"], horizontal=True)
 
 # Build map
-m = leafmap.Map(center=center, zoom=9, draw_control=False, measure_control=False)
+m = leafmap.Map(center=center, zoom=10, draw_control=False, measure_control=False)
 m.add_basemap("Esri.WorldImagery")
 
-# Add both rasters with consistent styling (fixed NDVI scale)
-left_layer_name = f"NDVI {left_year}"
-right_layer_name = f"NDVI {right_year}"
+if mode == "View single year":
+    year = st.slider("Year", min_value=min(years), max_value=max(years), value=min(years), step=1)
+    raster_path = str(ndvi_path(year))
+    m.add_raster(raster_path, cmap="RdYlGn", opacity=0.9, layer_name=f"NDVI {year}")
+    m.add_colormap(cmap="RdYlGn", vmin=0.0, vmax=1.0, label=f"NDVI {year}")
+    try:
+        m.zoom_to_bounds(m.get_bounds(raster_path))
+    except Exception:
+        pass
+else:
+    c1, c2 = st.columns(2)
+    with c1:
+        y_from = st.selectbox("Compare: From year", years, index=0)
+    with c2:
+        y_to = st.selectbox("Compare: To year", years, index=len(years) - 1)
 
-# Use RdYlGn for both; fixed vmin/vmax so colors are comparable
-m.add_raster(str(left_path), cmap="RdYlGn", vmin=0.0, vmax=1.0, opacity=1.0, layer_name=left_layer_name)
-m.add_raster(str(right_path), cmap="RdYlGn", vmin=0.0, vmax=1.0, opacity=1.0, layer_name=right_layer_name)
+    st.caption(f"ΔNDVI = NDVI({y_to}) − NDVI({y_from})")
 
-# Single legend (generic NDVI), not per-side
-m.add_colormap(cmap="RdYlGn", vmin=0.0, vmax=1.0, label="NDVI")
+    # optional context layer
+    show_context = st.checkbox(f"Show NDVI {y_to} under change layer", value=True)
 
-# Enable swipe: left vs right
-# leafmap wraps Leaflet's SideBySide plugin via split_map on layer names
-try:
-    m.split_map(left_layer=left_layer_name, right_layer=right_layer_name)
-except Exception:
-    # Fallback: show both with the right on top if split_map isn't available
-    st.warning("Swipe control not available; showing layers without swipe.")
-    # (Right year will appear above left; users can toggle from layer control)
-    m.add_layer_control()
+    delta_tif = write_delta_tif(y_from, y_to)
+    vmin, vmax = robust_delta_range(delta_tif)
 
-# Fit to rasters’ bounds (use left as representative)
-try:
-    m.zoom_to_bounds(m.get_bounds(str(left_path)))
-except Exception:
-    pass
+    if show_context:
+        base_raster = str(ndvi_path(y_to))
+        m.add_raster(base_raster, cmap="RdYlGn", opacity=0.65, layer_name=f"NDVI {y_to}")
 
+    m.add_raster(
+        str(delta_tif),
+        colormap="coolwarm",
+        vmin=vmin,
+        vmax=vmax,
+        opacity=0.85,
+        layer_name=f"ΔNDVI {y_from}→{y_to}",
+    )
+    m.add_colormap(cmap="coolwarm", vmin=vmin, vmax=vmax, label=f"ΔNDVI {y_from}→{y_to}")
+
+    try:
+        bounds_src = str(ndvi_path(y_to))
+        m.zoom_to_bounds(m.get_bounds(bounds_src))
+    except Exception:
+        pass
+
+m.add_layer_control()
 m.to_streamlit(height=780)
