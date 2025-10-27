@@ -30,13 +30,14 @@ The project computes **NDVI composites** to visualize vegetation change over tim
 ## 🚀 Usage
 
 ### 1. Setup Environment
-'''bash
+```bash
 conda create -n deforest python=3.11
 conda activate deforest
 pip install -r requirements.txt
-
+```
 ### 2. Run NDVI Processing
-MAX_SCENES=None MAX_CLOUD=80 WINDOW_WEEKS=8 DAY_GAP=10 python src/search_download.py
+```MAX_SCENES=None MAX_CLOUD=80 WINDOW_WEEKS=8 DAY_GAP=10 python src/search_download.py```
 
 ### 3. Launch the Streamlit app for viewing
-streamlit run app.py
+```streamlit run app.py```
+
