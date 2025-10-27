@@ -1,15 +1,9 @@
 #src/ndvi.py
 import numpy as np
 
-# Bitmask and classification values for cloud, water, and snow masking
-_L8_BAD = (1 << 1) | (1 << 3) | (1 << 4) | (1 << 5) | (1 << 7) # Landsat QA_PIXEL flags
+# Bitmask and classification values for cirrus, cloud, water, and snow masking
+_L8_BAD = ((1 << 1) | (1 << 2) | (1 << 3) | (1 << 4) | (1 << 5) | (1 << 7))
 SCL_BAD = np.array([3, 6, 7, 8, 9, 10, 11], dtype=np.uint8)    # Sentinel-2 bad SCL classes
-
-# Computes NDVI from red and NIR bands (scaled reflectance 0–1).
-def compute_ndvi(red, nir):
-    red = red.astype("float32") / 10000.0
-    nir = nir.astype("float32") / 10000.0
-    return (nir - red) / (nir + red + 1e-6)
 
 # Computes NDVI using dataset-specific scale and offset (Landsat/Sentinel mixed).
 def compute_ndvi_mixed(red, nir, cfg):

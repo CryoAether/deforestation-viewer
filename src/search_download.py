@@ -13,7 +13,7 @@ import stackstac as st
 import dask
 from dask.diagnostics import ProgressBar
 from tqdm.auto import tqdm
-from ndvi import compute_ndvi, mask_clouds
+from ndvi import compute_ndvi_mixed, mask_clouds, mask_clouds_mixed
 from collections import Counter
 
 # ---- Dataset registry (year → collection/bands/mask) ----
@@ -60,9 +60,9 @@ CATALOG = "https://planetarycomputer.microsoft.com/api/stac/v1"
 COLLECTION = "sentinel-2-l2a"
 
 # throttle: set MAX_SCENES=None to process all
-_env = os.getenv("MAX_SCENES", "12").lower()  # Testing phase, low value for quick results
+_env = os.getenv("MAX_SCENES", "none").lower()  # Testing phase, low value for quick results
 WINDOW_WEEKS = int(os.getenv("WINDOW_WEEKS", "8"))
-WINDOW_START_MONTH = int(os.getenv("WINDOW_START_MONTH", "7"))  # 7 = July
+WINDOW_START_MONTH = int(os.getenv("WINDOW_START_MONTH", "1"))  # 7 = July
 WINDOW_START_DAY = int(os.getenv("WINDOW_START_DAY", "1"))
 _env_norm = (_env or "").strip().lower()
 MAX_SCENES = None if _env_norm in ("none", "") else int(_env_norm)
@@ -200,8 +200,8 @@ def stack_for_year(items, aoi_gdf, cfg, resolution=30):
         bounds=(minx, miny, maxx, maxy),
         resolution=resolution,
         chunksize=768,
-        dtype="float64",  # keep memory low
-        fill_value=0.0,
+        dtype="float64", 
+        fill_value=0,
         rescale=False,    # we’ll apply scale/offset explicitly
     )
     stack = stack.chunk({"time": 1, "y": 512, "x": 512})
@@ -217,8 +217,9 @@ def main():
     # save NDVI composites under data/composites/ (what your app expects)
     outdir = pl.Path("data/composites")
     outdir.mkdir(parents=True, exist_ok=True)
+    years = list(range(1985, 2025))
 
-    years = [1990]  # : 2020, 2021, 2022, 2023, 2024
+    #years = [2000]  # : 2020, 2021, 2022, 2023, 2024
     for y in tqdm(years, desc="Years"):
         ds_name, cfg = select_dataset(y)
         print(f"[{y}] Using dataset {ds_name}: {cfg['collection']}")
@@ -269,32 +270,27 @@ def main():
             print(f"[{y}] Stack has 0 bands — likely no valid imagery overlaps AOI. Skipping year.")
             continue
 
-        asset_names = [cfg["assets"]["red"], cfg["assets"]["nir"], cfg["assets"]["qa"]]
+        asset_names = [red_key, nir_key, qa_key]
         if (
             (bdim not in stack.coords)
-            or (stack.coords[bdim].dtype.kind not in ("U", "O"))  # not string/object
-            or (stack.coords[bdim].size != 3)                      # expect 3 assets
+            or (stack.coords[bdim].dtype.kind not in ("U", "O"))
+            or (stack.coords[bdim].size != 3)
         ):
             stack = stack.assign_coords({bdim: np.array(asset_names, dtype=object)})
             print(f"[{y}] Relabeled band coord -> {asset_names}")
 
-        # Select dataset-appropriate bands
-        red = stack.sel({bdim: red_key}).astype("float64")
-        nir = stack.sel({bdim: nir_key}).astype("float64")
+        # Select dataset-appropriate bands (keep QA native)
+        red = stack.sel({bdim: red_key}).astype("float32")
+        nir = stack.sel({bdim: nir_key}).astype("float32")
         qa  = stack.sel({bdim: qa_key})
 
-        print(f"[{y}] Masking nodata (zeros) …")
-        nodata = (red == 0) | (nir == 0)
-        red = red.where(~nodata)
-        nir = nir.where(~nodata)
-
-        scale, offset = cfg["scale"], cfg["offset"]
-        red = red * scale + offset
-        nir = nir * scale + offset
+        # Treat sensor zeros as missing so they don't pollute NDVI
+        red = red.where(red != 0)
+        nir = nir.where(nir != 0)
 
         print(f"[{y}] Computing NDVI + cloud/snow/water mask …")
-        ndvi_t = compute_ndvi(red, nir)
-        ndvi_t = mask_clouds(qa, ndvi_t)
+        ndvi_t = compute_ndvi_mixed(red, nir, cfg)           # applies per-dataset scale/offset safely
+        ndvi_t = mask_clouds_mixed(qa, ndvi_t, cfg)          # S2 SCL vs Landsat QA_PIXEL handled here
 
         print(f"[{y}] Reducing to seasonal composite (max over time) …")
         ndvi_t = ndvi_t.chunk({"time": 1, "y": 1024, "x": 1024})
@@ -302,7 +298,7 @@ def main():
         ndvi_med = ndvi_med.where(np.isfinite(ndvi_med))
 
         out_tif = outdir / f"ndvi_median_{y}.tif"
-        crs = nir.rio.crs or stack.rio.crs or f"EPSG:{target_epsg}"
+        crs = nir.rio.crs or stack.rio.crs or aoi_gdf.estimate_utm_crs()
         ndvi_med.rio.write_crs(crs, inplace=True)
         ndvi_med.rio.write_transform(nir.rio.transform(), inplace=True)
 
