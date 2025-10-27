@@ -88,6 +88,7 @@ EPSG:4326 and reasonable longitude/latitude bounds.
 ## ⚙️ 6. Run the NDVI Pipeline
 Once your AOI is ready, you can process all available imagery:
 ```MAX_SCENES=None MAX_CLOUD=80 WINDOW_WEEKS=8 DAY_GAP=10 python src/search_download.py```
+
 The script will:
 	•	Search satellite imagery overlapping your AOI.
 	•	Compute NDVI composites per year.
