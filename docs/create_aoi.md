@@ -18,7 +18,7 @@ After installing, open QGIS. You should see an empty map canvas.
 
 ---
 
-## 🗺️ 2. Add a Basemap (for easy navigation)
+## 🗺️ 2. Add a Basemap
 
 By default, QGIS shows a blank white grid.  
 You can add realistic satellite imagery using the **QuickMapServices** plugin.
@@ -118,3 +118,6 @@ These variables determine which imagery is downloaded, how cloudy scenes are fil
 | Processing killed or hangs | AOI too large | Test a smaller area or limit scenes |
 | Weird rectangle or misplaced polygon | Coordinates flipped (lat/lon) | Ensure GeoJSON uses longitude first |
 
+## 8. Further Custimazation
+
+For further c
