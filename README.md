@@ -30,6 +30,7 @@ The project computes **NDVI composites** to visualize vegetation change over tim
 ## 🚀 Usage
 
 ### 1. Setup Environment
+Using example Area of Interest (AOI) Click **HERE** for info on creating your own AOI.
 ```bash
 conda create -n deforest python=3.11
 conda activate deforest
@@ -44,9 +45,10 @@ MAX_SCENES=None MAX_CLOUD=80 WINDOW_WEEKS=8 DAY_GAP=10 python src/search_downloa
 ```bash
 streamlit run app.py
 ```
+---
 ## 🚀 Examples
 
-### Year   Description
+### 
     1990   Dense vegetation, minimal disturbance
     2005   Visible clearing in north region
     2020   Sharp NDVI drop from deforestation
@@ -54,6 +56,7 @@ streamlit run app.py
 <p align="center">
   <img src="docs/ndvi_comparison.png" width="600" alt="NDVI Comparison"/>
 </p>
+
 
 
 
