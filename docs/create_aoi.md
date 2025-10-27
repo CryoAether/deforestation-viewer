@@ -92,7 +92,8 @@ Once your AOI is ready, you can process all available imagery:
 The script will:
 	•	Search satellite imagery overlapping your AOI.
 	•	Compute NDVI composites per year.
-	•	Save them in: `data/composites/ndvi_median_<YEAR>.tif`
+	•	Save them in: 
+	`data/composites/ndvi_median_<YEAR>.tif`
 
 # 🧩 7. Troubleshooting
 
