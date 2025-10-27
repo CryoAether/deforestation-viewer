@@ -91,10 +91,10 @@ Once your AOI is ready, you can process all available imagery:
 MAX_SCENES=None MAX_CLOUD=80 WINDOW_WEEKS=8 DAY_GAP=10 python src/search_download.py
 ```
 
-The script will:
--Search satellite imagery overlapping your AOI
--Compute NDVI composites per year
--Save them in: `data/composites/ndvi_median_<YEAR>.tif`
+The script will:  
+- Search satellite imagery overlapping your AOI  
+- Compute NDVI composites per year  
+- Save them in: `data/composites/ndvi_median_<YEAR>.tif`  
 
 ## ⚙️ Environment Variables (Customize Processing)
 You can control how the NDVI pipeline runs by setting environment variables directly in your terminal before executing search_download.py.
