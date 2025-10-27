@@ -95,7 +95,7 @@ The script will:
 	•	Save them in: 
 	`data/composites/ndvi_median_<YEAR>.tif`
 
-# ⚙️ Environment Variables (Customize Processing)
+## ⚙️ Environment Variables (Customize Processing)
 You can control how the NDVI pipeline runs by setting environment variables directly in your terminal before executing search_download.py.
 These variables determine which imagery is downloaded, how cloudy scenes are filtered, and how the processing window is defined.
 
@@ -108,7 +108,7 @@ These variables determine which imagery is downloaded, how cloudy scenes are fil
 | `WINDOW_START_DAY` | Day of the starting month (1–31) | `WINDOW_START_DAY=15` | Sets the day within the starting month. Combine with the above two for full date control (e.g., June 15). |
 | `DAY_GAP` | Minimum days between selected scenes | `DAY_GAP=10` | Prevents redundant images captured within a short time span from being included. A higher gap means fewer, more distinct images. |
 
-# 🧩 7. Troubleshooting
+## 🧩 7. Troubleshooting
 
 | **Issue** | **Likely Cause** | **Fix** |
 |------------|------------------|----------|
