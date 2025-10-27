@@ -1,33 +1,28 @@
-{\rtf1\ansi\ansicpg1252\cocoartf2865
-\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;\f1\fnil\fcharset0 AppleColorEmoji;\f2\fnil\fcharset0 LucidaGrande;
-}
-{\colortbl;\red255\green255\blue255;}
-{\*\expandedcolortbl;;}
-\margl1440\margr1440\vieww11520\viewh8400\viewkind0
-\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+# 🗺️ Creating a Custom Area of Interest (AOI)
 
-\f0\fs24 \cf0 # 
-\f1 \uc0\u55357 \u56826 \u65039 
-\f0  Creating a Custom Area of Interest (AOI)\
-\
-This guide explains how to define your own AOI for the Deforestation Viewer.\
-\
-## 1. Install QGIS\
-Download and install QGIS from [https://qgis.org](https://qgis.org).\
-\
-## 2. Draw Your AOI\
-1. Open QGIS and create a new project.\
-2. Use the **Polygon tool** to outline your desired area (forest, city, etc.).\
-3. Save the layer as a **GeoJSON file**.\
-\
-## 3. Ensure the Correct CRS\
-Make sure your file is in **EPSG:4326 (WGS84)** coordinates:\
-- Right-click the layer 
-\f2 \uc0\u8594 
-\f0  \'93Export\'94 
-\f2 \uc0\u8594 
-\f0  \'93Save Features As\'85\'94  \
-- Set CRS to `EPSG:4326`\
-\
-## 4. Place the AOI File\
-Move the resulting file into:}
+This guide explains how to define your own AOI for the Deforestation Viewer.
+
+## 1. Install QGIS
+Download and install QGIS from [https://qgis.org](https://qgis.org).
+
+## 2. Draw Your AOI
+1. Open QGIS and create a new project.
+2. Use the **Polygon tool** to outline your desired area (forest, city, etc.).
+3. Save the layer as a **GeoJSON file**.
+
+## 3. Ensure the Correct CRS
+Make sure your file is in **EPSG:4326 (WGS84)** coordinates:
+- Right-click the layer → “Export” → “Save Features As…”  
+- Set CRS to `EPSG:4326`
+
+## 4. Place the AOI File
+Move the resulting file into: `data/aoi/roi.geojson`.
+
+Your directory should look like:
+data/
+└── aoi/
+└── roi.geojson
+## 5. Run the Pipeline
+```bash
+MAX_SCENES=None MAX_CLOUD=80 WINDOW_WEEKS=8 DAY_GAP=10 python src/search_download.py
+```
