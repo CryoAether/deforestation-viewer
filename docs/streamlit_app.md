@@ -31,7 +31,6 @@ A slider selects one year. The app displays NDVI <year> with a green to red scal
 - Choose From year and To year. The app computes a difference raster on the fly:
 `\Delta \text{NDVI} = \text{NDVI}(\text{To}) - \text{NDVI}(\text{From})`
   - Positive values indicate greening. Negative values indicate loss.
-![Year slider](../assets/streamlit/year-slider.png)
 ![Change compare controls](../assets/streamlit/change-controls.png)
 
 ### Map Basics
@@ -151,8 +150,6 @@ m.add_colormap(cmap="coolwarm", vmin=vmin, vmax=vmax, label=f"ΔNDVI {y_from}→
 
 - You can switch to bwr or RdBu if you want a different diverging scheme.
 
-![Single year NDVI](../assets/streamlit/ndvi-layer.png)
-![ΔNDVI layer](../assets/streamlit/delta-layer.png)
 
 ## 6) Tips for Performance
 
