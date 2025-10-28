@@ -8,7 +8,7 @@ This script searches Microsoft Planetary Computer (MPC) for Landsat and Sentinel
 
 ## Quick start
 
-1. Prepare an AOI
+1. **Prepare an AOI**
 Make sure you have data/aoi/roi.geojson in EPSG:4326. See docs/create_aoi.md if you need help.
 2. Run the pipeline with sensible defaults
 
@@ -16,34 +16,34 @@ Make sure you have data/aoi/roi.geojson in EPSG:4326. See docs/create_aoi.md if 
 # Process all years, allow clouds up to 80%, 8-week seasonal window, 10-day de-dupe gap
 MAX_SCENES=None MAX_CLOUD=80 WINDOW_WEEKS=8 DAY_GAP=10 python src/search_download.py
 ```
-3. Inspect outputs
+3. **Inspect outputs**
 COGs are written to data/composites/. Load them in the Streamlit app or any GIS.
 
 ## What the script does
 
-1. Select dataset by year
+1. **Select dataset by year**
   - 1985–2012 → Landsat 5/7 (L57)
   - 2013–present → Landsat 8/9 (L89)
   - 2016–present → Sentinel-2 L2A (S2)
-2. Search scenes via STAC
+2. **Search scenes via STAC**
 	- Filters by date window and AOI intersection
   - Optional cloud cover cap using eo:cloud_cover
   - Deduplicates to the best cloud cover per tile per day
   - Optional date down-sampling per tile with DAY_GAP
-3. Build a stack with StackSTAC
+3. **Build a stack with StackSTAC**
   - Clips to AOI bounds and reprojects to a UTM CRS inferred from AOI
   - Keeps arrays lazy with Dask to avoid large local storage
-4.Compute NDVI per scene
+4. **Compute NDVI per scene**
   - Applies dataset-specific scale/offset rules
   - Sentinel-2: reflectance is scaled by 1/10000
   - Landsat C2: reflectance scale ≈ 2.75e-05 and offset ≈ −0.2 (your code uses those values)
   - Computes NDVI = (NIR − RED) / (NIR + RED)
-5.Mask clouds, water, snow
+5. **Mask clouds, water, snow**
 	- Sentinel-2 uses SCL categories
   - Landsat uses QA_PIXEL bit flags
-6. Compose a seasonal raster
+6. **Compose a seasonal raster**
 	- Reduces along time to a single composite per year (you are using .max(dim="time"))
-7. Write COG
+7. **Write COG**
   - Writes float32 COGs with DEFLATE compression and valid CRS/transform
 
 ## Environment variables
@@ -145,9 +145,9 @@ MAX_SCENES=6 MAX_CLOUD=70 WINDOW_WEEKS=6 DAY_GAP=12 python src/search_download.p
 
 ## How the composite is formed
 
-- Per scene: mask invalid pixels, scale reflectance, compute NDVI.
-- Per year: reduce along time with .max(dim="time", skipna=True) to produce a single seasonal composite.
-- Output: float32 COG, compressed, with CRS and transform set from the NIR grid.
+- **Per scene:** mask invalid pixels, scale reflectance, compute NDVI.
+- **Per year:** reduce along time with .max(dim="time", skipna=True) to produce a single seasonal composite.
+- **Output:** float32 COG, compressed, with CRS and transform set from the NIR grid.
 
 If you prefer a different reducer (median, 95th percentile), you can swap:
 
@@ -160,3 +160,4 @@ ndvi_med = ndvi_t.median(dim="time", skipna=True)
 # or
 ndvi_med = ndvi_t.quantile(0.95, dim="time", skipna=True)
 ```
+
