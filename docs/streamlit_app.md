@@ -23,9 +23,26 @@ The app will auto-discover raster files in data/composites/ and list the years.
 ### Modes
 
 You can switch modes at the top:  
-- **View single year ** 
+- **View single year** 
 A slider selects one year. The app displays NDVI <year> with a green to red scale.
   - Green ~ healthy vegetation
   - Red ~ low vegetation or disturbance
 - **Compare change (ΔNDVI)**
+- Choose From year and To year. The app computes a difference raster on the fly:
+`\Delta \text{NDVI} = \text{NDVI}(\text{To}) - \text{NDVI}(\text{From})`
+  - Positive values indicate greening. Negative values indicate loss.
+![Year slider](../assets/streamlit/year-slider.png)
+![Change compare controls](../assets/streamlit/change-controls.png)
 
+### Map Basics
+- Basemap: Esri.WorldImagery (high-res satellite context).
+- Map centers on your AOI centroid if available.
+- Use the layer control to toggle layers.
+
+## 3) Getting the Most Out of It
+
+**Pick useful year pairs**
+- Try 2016 → 2020, 2000 → 2021, or pre-event vs post-event periods.
+- Narrow geographic AOIs for fast interaction.
+
+**Normalize change smartly**
