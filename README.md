@@ -3,6 +3,7 @@
 A lightweight satellite analysis pipeline for monitoring vegetation change using **Landsat (5/7/8/9)** and **Sentinel-2** imagery through the **Microsoft Planetary Computer API**.  
 The system computes yearly **NDVI (Normalized Difference Vegetation Index)** composites and visualizes deforestation trends in an interactive Streamlit map.
 
+For full documentation and setup instructions, visit the [Deforestation Viewer Docs](https://cryoaether.github.io/deforestation-viewer/).
 ---
 
 ## Features
@@ -46,7 +47,7 @@ deforestation-viewer/
 
 ### 1. Set up the environment
 
-Using the included example AOI (or [create your own](create_aoi.md)):
+Using the included example AOI (or [create your own](docs\create_aoi.md)):
 
 ```bash
 conda create -n deforest python=3.11
@@ -99,3 +100,4 @@ Use the app’s controls to:
 - [Generate NDVI composites](search_download.md)  
 - [Explore in Streamlit](streamlit.md)  
 - [Learn about NDVI computation](ndvi.md)
+
