@@ -5,7 +5,6 @@ import os
 import pathlib as pl
 import numpy as np
 import geopandas as gpd
-import xarray as xr
 import rioxarray  # registers .rio accessor
 from pystac_client import Client
 import planetary_computer as pc
@@ -13,7 +12,7 @@ import stackstac as st
 import dask
 from dask.diagnostics import ProgressBar
 from tqdm.auto import tqdm
-from ndvi import compute_ndvi_mixed, mask_clouds, mask_clouds_mixed
+from ndvi import compute_ndvi_mixed, mask_clouds_mixed
 
 # ---- Dataset registry (year → collection/bands/mask) ----
 DATASETS = {
@@ -155,7 +154,9 @@ def search_items(aoi_geojson, start, end, max_cloud=25, cfg=None):
     items.sort(key=lambda it: it.datetime)
     filtered, last_for_tile = [], {}
     day_gap = int(os.getenv("DAY_GAP", "10"))
-
+    if day_gap <= 0:
+        print("Subsample disabled (DAY_GAP<=0); keeping all best-per-day-per-tile scenes.")
+        return items
     for it in items:
         if cfg["mask"] == "s2":
             tile_id = it.properties.get("s2:mgrs_tile")
