@@ -2,8 +2,11 @@
 src/legacy/
 data/raw/
 data/interim/
-data/composites/
-data/change/
+data/composites/*
+!data/composites/.gitkeep
+!data/composites/ndvi_median_1995.tif
+!data/composites/ndvi_median_2002.tif
+!data/composites/ndvi_median_2021.tifdata/change/
 data/composites/-old
 data/-dep
 data/aoi/*.shp
