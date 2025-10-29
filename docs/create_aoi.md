@@ -127,4 +127,4 @@ Once your AOI is saved and verified, you can:
 
 For detailed instructions, see:
 - [NDVI Composite Builder](search_download.md)
-- [Streamlit Viewer Guide](streamlit.md)
+- [Streamlit Viewer Guide](streamlit_app.md)
