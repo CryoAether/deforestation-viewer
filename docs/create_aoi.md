@@ -44,7 +44,7 @@ This provides a visual reference for accurately drawing your AOI.
    *(or use **Layer → Create Layer → New GeoPackage Layer** if preferred)*  
 
    <p align="center">
-     <img src=".../assets/aoi/1.png" width="500" alt="Creating new polygon layer in QGIS">
+     <img src="...assets/aoi/1.png" width="500" alt="Creating new polygon layer in QGIS">
    </p>
 
 2. Set **CRS** to `EPSG:4326 (WGS 84)`  
