@@ -91,12 +91,17 @@ Use the app’s controls to:
 
 | Year | Observation |
 |------|--------------|
-| **1990** | Dense vegetation with minimal disturbance |
-| **2005** | Visible clearing in northern region |
-| **2020** | Significant NDVI decline due to deforestation |
+| **1995** | Dense vegetation with minimal disturbance |
+| **2002** | Visible clearing in northern region |
+| **2021** | Significant NDVI decline due to deforestation |
 
 <p align="center">
-  <img src="docs/ndvi_comparison.png" width="650" alt="NDVI Comparison Example">
+  <img src="docs/1995.png" width="31%" alt="NDVI 1995">
+  <img src="docs/2002.png" width="31%" alt="NDVI 2002">
+  <img src="docs/2021.png" width="31%" alt="NDVI 2021">
+</p>
+<p align="center">
+  <em>NDVI change progression — 1995 → 2002 → 2021</em>
 </p>
 
 ---
@@ -107,6 +112,7 @@ Use the app’s controls to:
 - [Generate NDVI composites](docs/search_download.md)  
 - [Explore in Streamlit](docs/streamlit_app.md)  
 - [Learn about NDVI computation](docs/ndvi.md)
+
 
 
 
