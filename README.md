@@ -45,16 +45,14 @@ deforestation-viewer/
 
 ## Quick Start
 
-### 1. Set up the environment
-
-### Clone the Repository
-
-To download the project and start working locally:
+### 1. Clone the Repository
 
 ```bash
 git clone https://github.com/CryoAether/deforestation-viewer.git
 cd deforestation-viewer
 ```
+
+### 2. Set up the Environment
 
 Using the included example AOI (or [create your own](docs/create_aoi.md)):
 
@@ -64,7 +62,7 @@ conda activate deforest
 pip install -r requirements.txt
 ```
 
-### 2. Generate NDVI composites
+### 3. Generate NDVI composites
 
 For a fast test run using limited scenes:
 
@@ -77,7 +75,7 @@ This will:
 - Compute NDVI for each scene  
 - Write yearly composites to `data/composites/`
 
-### 3. Launch the viewer
+### 4. Launch the viewer
 
 ```bash
 streamlit run src/streamlit_app.py
@@ -109,6 +107,7 @@ Use the app’s controls to:
 - [Generate NDVI composites](docs/search_download.md)  
 - [Explore in Streamlit](docs/streamlit_app.md)  
 - [Learn about NDVI computation](docs/ndvi.md)
+
 
 
 
