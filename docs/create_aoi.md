@@ -42,12 +42,17 @@ This provides a visual reference for accurately drawing your AOI.
 
 1. In the **Layers panel**, select **New Shapefile Layer → Polygon**  
    *(or use **Layer → Create Layer → New GeoPackage Layer** if preferred)*  
+
+   <p align="center">
+     <img src="assets/aoi/1.png" width="500" alt="Creating new polygon layer in QGIS">
+   </p>
+
 2. Set **CRS** to `EPSG:4326 (WGS 84)`  
 3. Click **OK** to create the layer  
 4. Right-click the new layer → **Toggle Editing**  
 5. Use the **Add Polygon Feature** tool to draw your AOI (e.g., a forest, park, or region of interest)  
-6. When done, right-click → **Save Edits**, then toggle editing off  
-
+6. When done, right-click → **Save Edits**, then toggle editing off
+  
 **Tip:**  
 Start with a relatively small AOI (a few thousand km² or less) when testing.  
 Larger AOIs may take significantly longer to process.
