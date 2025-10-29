@@ -96,9 +96,9 @@ Use the app’s controls to:
 | **2021** | Significant NDVI decline due to deforestation |
 
 <p align="center">
-  <img src="docs/1995.png" width="31%" alt="NDVI 1995">
-  <img src="docs/2002.png" width="31%" alt="NDVI 2002">
-  <img src="docs/2021.png" width="31%" alt="NDVI 2021">
+  <img src="assets/readme/1995.png" width="31%" alt="NDVI 1995">
+  <img src="assets/readme/2002.png" width="31%" alt="NDVI 2002">
+  <img src="assets/readme/2021.png" width="31%" alt="NDVI 2021">
 </p>
 <p align="center">
   <em>NDVI change progression — 1995 → 2002 → 2021</em>
@@ -112,6 +112,7 @@ Use the app’s controls to:
 - [Generate NDVI composites](docs/search_download.md)  
 - [Explore in Streamlit](docs/streamlit_app.md)  
 - [Learn about NDVI computation](docs/ndvi.md)
+
 
 
 
