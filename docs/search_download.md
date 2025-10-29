@@ -1,4 +1,4 @@
-# search_download.py — NDVI Composite Builder
+# NDVI Composite Builder (search_download.py)— 
 
 This module retrieves Landsat and Sentinel-2 imagery from the Microsoft Planetary Computer (MPC), masks clouds and invalid pixels, computes NDVI for each scene, and writes annual seasonal composites as Cloud-Optimized GeoTIFFs (COGs).
 
@@ -179,3 +179,4 @@ streamlit run src/streamlit.py
 ```
 
 This allows interactive exploration, year comparison, and ΔNDVI visualization.
+
