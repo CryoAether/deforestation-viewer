@@ -56,7 +56,7 @@ This provides a visual reference for accurately drawing your AOI.
    </p>
 5. Use the **Add Polygon Feature** tool to draw your AOI (e.g., a forest, park, or region of interest)  
    <p align="left">
-    <img src="../assets/aoi/3.png" width="400" alt="Adding polygon feature">
+    <img src="../assets/aoi/3.png" width="350" alt="Adding polygon feature">
    </p>
 6. When done, right-click → **Save Edits**, then toggle editing off
   
