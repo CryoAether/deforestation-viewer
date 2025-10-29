@@ -6,25 +6,27 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="NDVI-based vegetation change visualization (1985–2024)">
+        <meta name="description" content="Satellite-based NDVI change detection (1985–2024)">
       
       
         <meta name="author" content="Lachlan Black">
       
       
+        <link rel="canonical" href="https://cryoaether.github.io/deforestation-viewer/ndvi/">
       
-        <link rel="prev" href="../streamlit_app/">
+      
+        <link rel="prev" href="../create_aoi/">
       
       
         <link rel="next" href="../search_download/">
       
       
-      <link rel="icon" href="../assets/images/favicon.png">
+      <link rel="icon" href="../assets/readme/1995.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.22">
     
     
       
-        <title>NDVI Functions - Deforestation Viewer</title>
+        <title>NDVI Computation - Deforestation Viewer</title>
       
     
     
@@ -67,7 +69,7 @@
     
     
     
-    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="green" data-md-color-accent="lime">
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="green" data-md-color-accent="light-green">
   
     
     <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
@@ -88,14 +90,11 @@
     
       
 
-  
-
-<header class="md-header md-header--shadow" data-md-component="header">
+<header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
     <a href=".." title="Deforestation Viewer" class="md-header__button md-logo" aria-label="Deforestation Viewer" data-md-component="logo">
       
-  
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+  <img src="../assets/readme/1995.png" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -112,7 +111,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              NDVI Functions
+              NDVI Computation
             
           </span>
         </div>
@@ -125,7 +124,7 @@
     
     
     
-    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="green" data-md-color-accent="lime"  aria-hidden="true"  type="radio" name="__palette" id="__palette_0">
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="green" data-md-color-accent="light-green"  aria-hidden="true"  type="radio" name="__palette" id="__palette_0">
     
   
 </form>
@@ -161,6 +160,8 @@
         </button>
       </nav>
       
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
     </form>
     <div class="md-search__output">
       <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
@@ -184,7 +185,7 @@
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
   </div>
   <div class="md-source__repository">
-    GitHub
+    CryoAether/deforestation-viewer
   </div>
 </a>
       </div>
@@ -197,6 +198,150 @@
       
       
         
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href=".." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../install/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Installation
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../create_aoi/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Create AOI
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    <li class="md-tabs__item md-tabs__item--active">
+      <a href="./" class="md-tabs__link">
+        
+  
+  
+    
+  
+  NDVI Computation
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../search_download/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Data Search & Download
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../streamlit_app/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Streamlit Viewer
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../troubleshooting/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Troubleshooting
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
           
         
       
@@ -211,13 +356,16 @@
                     
 
 
+  
 
-<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
     <a href=".." title="Deforestation Viewer" class="md-nav__button md-logo" aria-label="Deforestation Viewer" data-md-component="logo">
       
-  
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+  <img src="../assets/readme/1995.png" alt="logo">
 
     </a>
     Deforestation Viewer
@@ -230,7 +378,7 @@
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
   </div>
   <div class="md-source__repository">
-    GitHub
+    CryoAether/deforestation-viewer
   </div>
 </a>
     </div>
@@ -266,12 +414,12 @@
   
   
     <li class="md-nav__item">
-      <a href="../create_aoi/" class="md-nav__link">
+      <a href="../install/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
-    Creating an AOI
+    Installation
     
   </span>
   
@@ -288,12 +436,12 @@
   
   
     <li class="md-nav__item">
-      <a href="../streamlit_app/" class="md-nav__link">
+      <a href="../create_aoi/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
-    Streamlit App
+    Create AOI
     
   </span>
   
@@ -324,7 +472,7 @@
   
   
   <span class="md-ellipsis">
-    NDVI Functions
+    NDVI Computation
     
   </span>
   
@@ -337,7 +485,7 @@
   
   
   <span class="md-ellipsis">
-    NDVI Functions
+    NDVI Computation
     
   </span>
   
@@ -475,7 +623,51 @@
   
   
   <span class="md-ellipsis">
-    Search & Download Pipeline
+    Data Search & Download
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../streamlit_app/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Streamlit Viewer
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../troubleshooting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Troubleshooting
     
   </span>
   
@@ -492,128 +684,6 @@
               </div>
             
             
-              
-              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
-                <div class="md-sidebar__scrollwrap">
-                  <div class="md-sidebar__inner">
-                    
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#overview" class="md-nav__link">
-    <span class="md-ellipsis">
-      Overview
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#functions" class="md-nav__link">
-    <span class="md-ellipsis">
-      Functions
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Functions">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#compute_ndvi_mixedred-nir-cfg" class="md-nav__link">
-    <span class="md-ellipsis">
-      compute_ndvi_mixed(red, nir, cfg)
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#mask_cloudsscl-arr" class="md-nav__link">
-    <span class="md-ellipsis">
-      mask_clouds(scl, arr)
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#mask_clouds_mixedqa-arr-cfg" class="md-nav__link">
-    <span class="md-ellipsis">
-      mask_clouds_mixed(qa, arr, cfg)
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#bitmask-definitions" class="md-nav__link">
-    <span class="md-ellipsis">
-      Bitmask Definitions
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#integration-with-the-pipeline" class="md-nav__link">
-    <span class="md-ellipsis">
-      Integration with the Pipeline
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#visualization-guidance" class="md-nav__link">
-    <span class="md-ellipsis">
-      Visualization Guidance
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#example-workflow" class="md-nav__link">
-    <span class="md-ellipsis">
-      Example Workflow
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#notes" class="md-nav__link">
-    <span class="md-ellipsis">
-      Notes
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-                  </div>
-                </div>
-              </div>
-            
           
           
             <div class="md-content" data-md-component="content">
@@ -626,16 +696,16 @@
   
 
 
-<h1 id="ndvi-computation-and-masking-ndvipy">NDVI Computation and Masking (<code>ndvi.py</code>)<a class="headerlink" href="#ndvi-computation-and-masking-ndvipy" title="Permanent link">&para;</a></h1>
+<h1 id="ndvi-computation-and-masking-ndvipy">NDVI Computation and Masking (<code>ndvi.py</code>)</h1>
 <p>This module performs Normalized Difference Vegetation Index (NDVI) calculations and masks invalid pixels such as clouds, water, and snow for both <strong>Landsat</strong> and <strong>Sentinel-2</strong> datasets.<br />
 It is imported and called by <code>search_download.py</code> to compute annual NDVI composites.</p>
 <hr />
-<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
+<h2 id="overview">Overview</h2>
 <p>The functions in <code>ndvi.py</code> ensure that NDVI values are calculated consistently across sensors and that non-vegetation artifacts are removed before compositing.<br />
 By isolating this logic, the main processing pipeline remains modular, easy to test, and extensible.</p>
 <hr />
-<h2 id="functions">Functions<a class="headerlink" href="#functions" title="Permanent link">&para;</a></h2>
-<h3 id="compute_ndvi_mixedred-nir-cfg"><code>compute_ndvi_mixed(red, nir, cfg)</code><a class="headerlink" href="#compute_ndvi_mixedred-nir-cfg" title="Permanent link">&para;</a></h3>
+<h2 id="functions">Functions</h2>
+<h3 id="compute_ndvi_mixedred-nir-cfg"><code>compute_ndvi_mixed(red, nir, cfg)</code></h3>
 <p>Computes NDVI using the formula:<br />
 <code>NDVI = (NIR - Red) / (NIR + Red)</code></p>
 <ul>
@@ -649,14 +719,14 @@ By isolating this logic, the main processing pipeline remains modular, easy to t
 <p><strong>Returns:</strong><br />
 A normalized NDVI array between -1 and 1.</p>
 <hr />
-<h3 id="mask_cloudsscl-arr"><code>mask_clouds(scl, arr)</code><a class="headerlink" href="#mask_cloudsscl-arr" title="Permanent link">&para;</a></h3>
+<h3 id="mask_cloudsscl-arr"><code>mask_clouds(scl, arr)</code></h3>
 <p>Masks invalid Sentinel-2 pixels using <strong>Scene Classification Layer (SCL)</strong> codes.<br />
 Converts SCL values to integers and replaces all cloud, water, and snow classes with <code>NaN</code>.</p>
 <p><strong>Key behavior:</strong>
 - Ensures only valid surface reflectance pixels remain<br />
 - Used exclusively for Sentinel-2 (<code>cfg["mask"] == "s2"</code>)</p>
 <hr />
-<h3 id="mask_clouds_mixedqa-arr-cfg"><code>mask_clouds_mixed(qa, arr, cfg)</code><a class="headerlink" href="#mask_clouds_mixedqa-arr-cfg" title="Permanent link">&para;</a></h3>
+<h3 id="mask_clouds_mixedqa-arr-cfg"><code>mask_clouds_mixed(qa, arr, cfg)</code></h3>
 <p>Applies the correct cloud/snow/water masking depending on dataset type.</p>
 <ul>
 <li>
@@ -670,7 +740,7 @@ Converts SCL values to integers and replaces all cloud, water, and snow classes 
 </ul>
 <p>This ensures all NDVI composites are generated only from valid, cloud-free data.</p>
 <hr />
-<h2 id="bitmask-definitions">Bitmask Definitions<a class="headerlink" href="#bitmask-definitions" title="Permanent link">&para;</a></h2>
+<h2 id="bitmask-definitions">Bitmask Definitions</h2>
 <table>
 <thead>
 <tr>
@@ -693,7 +763,7 @@ Converts SCL values to integers and replaces all cloud, water, and snow classes 
 </tbody>
 </table>
 <hr />
-<h2 id="integration-with-the-pipeline">Integration with the Pipeline<a class="headerlink" href="#integration-with-the-pipeline" title="Permanent link">&para;</a></h2>
+<h2 id="integration-with-the-pipeline">Integration with the Pipeline</h2>
 <ol>
 <li><strong><code>search_download.py</code></strong> loads the Red, NIR, and QA bands.  </li>
 <li><code>compute_ndvi_mixed()</code> scales reflectance and computes NDVI.  </li>
@@ -702,7 +772,7 @@ Converts SCL values to integers and replaces all cloud, water, and snow classes 
 </ol>
 <p>This modular design allows <code>search_download.py</code> to handle both Landsat and Sentinel-2 data uniformly.</p>
 <hr />
-<h2 id="visualization-guidance">Visualization Guidance<a class="headerlink" href="#visualization-guidance" title="Permanent link">&para;</a></h2>
+<h2 id="visualization-guidance">Visualization Guidance</h2>
 <p>You can preview the NDVI outputs using either <strong>QGIS</strong> or the <strong>Streamlit app</strong> (<code>streamlit_app.py</code>):</p>
 <ul>
 <li>Green → healthy vegetation (high NDVI)  </li>
@@ -710,16 +780,15 @@ Converts SCL values to integers and replaces all cloud, water, and snow classes 
 </ul>
 <p>For clarity, consider including a before/after masking image in future documentation showing how clouds and snow are filtered out.</p>
 <hr />
-<h2 id="example-workflow">Example Workflow<a class="headerlink" href="#example-workflow" title="Permanent link">&para;</a></h2>
-<div class="codehilite"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ndvi</span><span class="w"> </span><span class="kn">import</span> <span class="n">compute_ndvi_mixed</span><span class="p">,</span> <span class="n">mask_clouds_mixed</span>
+<h2 id="example-workflow">Example Workflow</h2>
+<pre><code class="language-python">from ndvi import compute_ndvi_mixed, mask_clouds_mixed
 
-<span class="n">ndvi</span> <span class="o">=</span> <span class="n">compute_ndvi_mixed</span><span class="p">(</span><span class="n">red_band</span><span class="p">,</span> <span class="n">nir_band</span><span class="p">,</span> <span class="n">cfg</span><span class="p">)</span>
-<span class="n">clean_ndvi</span> <span class="o">=</span> <span class="n">mask_clouds_mixed</span><span class="p">(</span><span class="n">qa_band</span><span class="p">,</span> <span class="n">ndvi</span><span class="p">,</span> <span class="n">cfg</span><span class="p">)</span>
-</code></pre></div>
-
+ndvi = compute_ndvi_mixed(red_band, nir_band, cfg)
+clean_ndvi = mask_clouds_mixed(qa_band, ndvi, cfg)
+</code></pre>
 <p>The resulting <code>clean_ndvi</code> can then be passed into the compositing step in <code>search_download.py</code>.</p>
 <hr />
-<h2 id="notes">Notes<a class="headerlink" href="#notes" title="Permanent link">&para;</a></h2>
+<h2 id="notes">Notes</h2>
 <ul>
 <li>Always use scaled reflectance inputs (not raw DN values).  </li>
 <li>Consistent scaling and masking are essential to ensure accurate temporal NDVI comparisons across years and sensors.  </li>
@@ -744,6 +813,12 @@ Converts SCL values to integers and replaces all cloud, water, and snow classes 
           
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
         
       </main>
       
@@ -773,7 +848,7 @@ Converts SCL values to integers and replaces all cloud, water, and snow classes 
     
     
       
-      <script id="__config" type="application/json">{"base": "..", "features": ["navigation.instant", "navigation.expand", "search.highlight"], "search": "../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"base": "..", "features": ["navigation.tabs", "navigation.expand", "navigation.top", "toc.integrate", "search.suggest", "content.code.copy"], "search": "../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../assets/javascripts/bundle.f55a23d4.min.js"></script>

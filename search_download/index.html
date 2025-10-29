@@ -6,23 +6,27 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="NDVI-based vegetation change visualization (1985–2024)">
+        <meta name="description" content="Satellite-based NDVI change detection (1985–2024)">
       
       
         <meta name="author" content="Lachlan Black">
       
       
+        <link rel="canonical" href="https://cryoaether.github.io/deforestation-viewer/search_download/">
+      
       
         <link rel="prev" href="../ndvi/">
       
       
+        <link rel="next" href="../streamlit_app/">
       
-      <link rel="icon" href="../assets/images/favicon.png">
+      
+      <link rel="icon" href="../assets/readme/1995.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.22">
     
     
       
-        <title>Search & Download Pipeline - Deforestation Viewer</title>
+        <title>Data Search & Download - Deforestation Viewer</title>
       
     
     
@@ -65,7 +69,7 @@
     
     
     
-    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="green" data-md-color-accent="lime">
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="green" data-md-color-accent="light-green">
   
     
     <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
@@ -86,14 +90,11 @@
     
       
 
-  
-
-<header class="md-header md-header--shadow" data-md-component="header">
+<header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
     <a href=".." title="Deforestation Viewer" class="md-header__button md-logo" aria-label="Deforestation Viewer" data-md-component="logo">
       
-  
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+  <img src="../assets/readme/1995.png" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -110,7 +111,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Search & Download Pipeline
+              Data Search & Download
             
           </span>
         </div>
@@ -123,7 +124,7 @@
     
     
     
-    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="green" data-md-color-accent="lime"  aria-hidden="true"  type="radio" name="__palette" id="__palette_0">
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="green" data-md-color-accent="light-green"  aria-hidden="true"  type="radio" name="__palette" id="__palette_0">
     
   
 </form>
@@ -159,6 +160,8 @@
         </button>
       </nav>
       
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
     </form>
     <div class="md-search__output">
       <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
@@ -182,7 +185,7 @@
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
   </div>
   <div class="md-source__repository">
-    GitHub
+    CryoAether/deforestation-viewer
   </div>
 </a>
       </div>
@@ -195,6 +198,150 @@
       
       
         
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href=".." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../install/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Installation
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../create_aoi/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Create AOI
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../ndvi/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  NDVI Computation
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    <li class="md-tabs__item md-tabs__item--active">
+      <a href="./" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Data Search & Download
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../streamlit_app/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Streamlit Viewer
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../troubleshooting/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Troubleshooting
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
           
         
       
@@ -209,13 +356,16 @@
                     
 
 
+  
 
-<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
     <a href=".." title="Deforestation Viewer" class="md-nav__button md-logo" aria-label="Deforestation Viewer" data-md-component="logo">
       
-  
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+  <img src="../assets/readme/1995.png" alt="logo">
 
     </a>
     Deforestation Viewer
@@ -228,7 +378,7 @@
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
   </div>
   <div class="md-source__repository">
-    GitHub
+    CryoAether/deforestation-viewer
   </div>
 </a>
     </div>
@@ -264,12 +414,12 @@
   
   
     <li class="md-nav__item">
-      <a href="../create_aoi/" class="md-nav__link">
+      <a href="../install/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
-    Creating an AOI
+    Installation
     
   </span>
   
@@ -286,12 +436,12 @@
   
   
     <li class="md-nav__item">
-      <a href="../streamlit_app/" class="md-nav__link">
+      <a href="../create_aoi/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
-    Streamlit App
+    Create AOI
     
   </span>
   
@@ -313,7 +463,7 @@
   
   
   <span class="md-ellipsis">
-    NDVI Functions
+    NDVI Computation
     
   </span>
   
@@ -344,7 +494,7 @@
   
   
   <span class="md-ellipsis">
-    Search & Download Pipeline
+    Data Search & Download
     
   </span>
   
@@ -357,7 +507,7 @@
   
   
   <span class="md-ellipsis">
-    Search & Download Pipeline
+    Data Search & Download
     
   </span>
   
@@ -519,170 +669,56 @@
   
 
     
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../streamlit_app/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Streamlit Viewer
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../troubleshooting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Troubleshooting
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
   </ul>
 </nav>
                   </div>
                 </div>
               </div>
             
-            
-              
-              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
-                <div class="md-sidebar__scrollwrap">
-                  <div class="md-sidebar__inner">
-                    
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#overview" class="md-nav__link">
-    <span class="md-ellipsis">
-      Overview
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#quick-start" class="md-nav__link">
-    <span class="md-ellipsis">
-      Quick Start
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#what-the-script-does" class="md-nav__link">
-    <span class="md-ellipsis">
-      What the Script Does
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#environment-variables" class="md-nav__link">
-    <span class="md-ellipsis">
-      Environment Variables
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#controlling-years" class="md-nav__link">
-    <span class="md-ellipsis">
-      Controlling Years
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#implementation-notes" class="md-nav__link">
-    <span class="md-ellipsis">
-      Implementation Notes
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Implementation Notes">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#dataset-registry-datasets" class="md-nav__link">
-    <span class="md-ellipsis">
-      Dataset Registry (DATASETS)
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#landsat-asset-resolution" class="md-nav__link">
-    <span class="md-ellipsis">
-      Landsat Asset Resolution
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#cloud-masking" class="md-nav__link">
-    <span class="md-ellipsis">
-      Cloud Masking
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#crs-handling" class="md-nav__link">
-    <span class="md-ellipsis">
-      CRS Handling
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#performance-and-memory" class="md-nav__link">
-    <span class="md-ellipsis">
-      Performance and Memory
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#troubleshooting" class="md-nav__link">
-    <span class="md-ellipsis">
-      Troubleshooting
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#how-the-composite-is-formed" class="md-nav__link">
-    <span class="md-ellipsis">
-      How the Composite Is Formed
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#next-steps" class="md-nav__link">
-    <span class="md-ellipsis">
-      Next Steps
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-                  </div>
-                </div>
-              </div>
             
           
           
@@ -696,7 +732,7 @@
   
 
 
-<h1 id="ndvi-composite-builder-search_downloadpy">NDVI Composite Builder (search_download.py)<a class="headerlink" href="#ndvi-composite-builder-search_downloadpy" title="Permanent link">&para;</a></h1>
+<h1 id="ndvi-composite-builder-search_downloadpy">NDVI Composite Builder (search_download.py)</h1>
 <p>This module retrieves Landsat and Sentinel-2 imagery from the Microsoft Planetary Computer (MPC), masks clouds and invalid pixels, computes NDVI for each scene, and writes annual seasonal composites as Cloud-Optimized GeoTIFFs (COGs).</p>
 <ul>
 <li><strong>Input:</strong> <code>data/aoi/roi.geojson</code> (EPSG:4326)</li>
@@ -704,11 +740,11 @@
 <li><strong>Years covered:</strong> 1985–2024 (Landsat 5/7/8/9 and Sentinel-2)</li>
 </ul>
 <hr />
-<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
+<h2 id="overview">Overview</h2>
 <p><code>search_download.py</code> forms the processing backbone of the Deforestation Viewer.<br />
 It automatically selects the correct satellite dataset, retrieves imagery, builds multi-temporal stacks, computes NDVI, and outputs a single cleaned composite per year.</p>
 <hr />
-<h2 id="quick-start">Quick Start<a class="headerlink" href="#quick-start" title="Permanent link">&para;</a></h2>
+<h2 id="quick-start">Quick Start</h2>
 <ol>
 <li>
 <p><strong>Prepare an AOI</strong><br />
@@ -728,7 +764,7 @@ It automatically selects the correct satellite dataset, retrieves imagery, build
 </li>
 </ol>
 <hr />
-<h2 id="what-the-script-does">What the Script Does<a class="headerlink" href="#what-the-script-does" title="Permanent link">&para;</a></h2>
+<h2 id="what-the-script-does">What the Script Does</h2>
 <ol>
 <li><strong>Selects dataset by year</strong></li>
 <li>1985–2012 → Landsat 5/7 (L57)  </li>
@@ -783,7 +819,7 @@ It automatically selects the correct satellite dataset, retrieves imagery, build
 <li>Ensures valid CRS and affine transform metadata</li>
 </ol>
 <hr />
-<h2 id="environment-variables">Environment Variables<a class="headerlink" href="#environment-variables" title="Permanent link">&para;</a></h2>
+<h2 id="environment-variables">Environment Variables</h2>
 <p>Tune the run directly from the command line without editing the code.</p>
 <table>
 <thead>
@@ -827,54 +863,51 @@ It automatically selects the correct satellite dataset, retrieves imagery, build
 </tbody>
 </table>
 <p><strong>Examples</strong></p>
-<div class="codehilite"><pre><span></span><code><span class="c1"># Aggressive data pull over a longer season</span>
-<span class="nv">MAX_SCENES</span><span class="o">=</span>None<span class="w"> </span><span class="nv">MAX_CLOUD</span><span class="o">=</span><span class="m">85</span><span class="w"> </span><span class="nv">WINDOW_WEEKS</span><span class="o">=</span><span class="m">12</span><span class="w"> </span><span class="nv">DAY_GAP</span><span class="o">=</span><span class="m">8</span><span class="w"> </span>python<span class="w"> </span>src/search_download.py
+<pre><code class="language-bash"># Aggressive data pull over a longer season
+MAX_SCENES=None MAX_CLOUD=85 WINDOW_WEEKS=12 DAY_GAP=8 python src/search_download.py
 
-<span class="c1"># Faster development run over a short window</span>
-<span class="nv">MAX_SCENES</span><span class="o">=</span><span class="m">8</span><span class="w"> </span><span class="nv">MAX_CLOUD</span><span class="o">=</span><span class="m">70</span><span class="w"> </span><span class="nv">WINDOW_WEEKS</span><span class="o">=</span><span class="m">6</span><span class="w"> </span><span class="nv">DAY_GAP</span><span class="o">=</span><span class="m">12</span><span class="w"> </span>python<span class="w"> </span>src/search_download.py
-</code></pre></div>
-
+# Faster development run over a short window
+MAX_SCENES=8 MAX_CLOUD=70 WINDOW_WEEKS=6 DAY_GAP=12 python src/search_download.py
+</code></pre>
 <hr />
-<h2 id="controlling-years">Controlling Years<a class="headerlink" href="#controlling-years" title="Permanent link">&para;</a></h2>
+<h2 id="controlling-years">Controlling Years</h2>
 <p>By default:</p>
-<div class="codehilite"><pre><span></span><code><span class="n">years</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1985</span><span class="p">,</span> <span class="mi">2025</span><span class="p">))</span>
-</code></pre></div>
-
+<pre><code class="language-python">years = list(range(1985, 2025))
+</code></pre>
 <p>Common edits:</p>
-<div class="codehilite"><pre><span></span><code><span class="c1"># Single year</span>
-<span class="n">years</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2016</span><span class="p">]</span>
+<pre><code class="language-python"># Single year
+years = [2016]
 
-<span class="c1"># Span of years</span>
-<span class="n">years</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">2000</span><span class="p">,</span> <span class="mi">2006</span><span class="p">))</span>  <span class="c1"># 2000–2005 inclusive</span>
+# Span of years
+years = list(range(2000, 2006))  # 2000–2005 inclusive
 
-<span class="c1"># Last decade</span>
-<span class="n">years</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">2015</span><span class="p">,</span> <span class="mi">2025</span><span class="p">))</span>
-</code></pre></div>
-
+# Last decade
+years = list(range(2015, 2025))
+</code></pre>
 <hr />
-<h2 id="implementation-notes">Implementation Notes<a class="headerlink" href="#implementation-notes" title="Permanent link">&para;</a></h2>
-<h3 id="dataset-registry-datasets">Dataset Registry (<code>DATASETS</code>)<a class="headerlink" href="#dataset-registry-datasets" title="Permanent link">&para;</a></h3>
+<h2 id="implementation-notes">Implementation Notes</h2>
+<h3 id="dataset-registry-datasets">Dataset Registry (<code>DATASETS</code>)</h3>
 <p>Each dataset defines the STAC collection, band names, masking strategy, and reflectance scale/offset.<br />
 The correct configuration is automatically selected using <code>select_dataset(year)</code>.</p>
-<h3 id="landsat-asset-resolution">Landsat Asset Resolution<a class="headerlink" href="#landsat-asset-resolution" title="Permanent link">&para;</a></h3>
+<h3 id="landsat-asset-resolution">Landsat Asset Resolution</h3>
 <p>Planetary Computer occasionally renames bands.<br />
 <code>resolve_landsat_assets()</code> checks the first item to confirm the correct RED, NIR, and QA keys (e.g., <code>SR_B3</code>, <code>SR_B4</code>, <code>SR_B5</code>, or <code>QA_PIXEL</code>).</p>
-<h3 id="cloud-masking">Cloud Masking<a class="headerlink" href="#cloud-masking" title="Permanent link">&para;</a></h3>
+<h3 id="cloud-masking">Cloud Masking</h3>
 <ul>
 <li><strong>Sentinel-2:</strong> masks <code>SCL</code> categories (cloud, cirrus, snow, water, shadow)  </li>
 <li><strong>Landsat:</strong> uses <code>_L8_BAD</code> bitmask from <code>QA_PIXEL</code></li>
 </ul>
-<h3 id="crs-handling">CRS Handling<a class="headerlink" href="#crs-handling" title="Permanent link">&para;</a></h3>
+<h3 id="crs-handling">CRS Handling</h3>
 <p>The AOI is reprojected to an estimated UTM CRS.<br />
 If a CRS is missing from the output, it’s written from the AOI before export.</p>
-<h3 id="performance-and-memory">Performance and Memory<a class="headerlink" href="#performance-and-memory" title="Permanent link">&para;</a></h3>
+<h3 id="performance-and-memory">Performance and Memory</h3>
 <ul>
 <li>Dask lazily evaluates all computations  </li>
 <li><code>MAX_SCENES</code> and <code>DAY_GAP</code> limit per-year data volume  </li>
 <li>Chunks are tuned for balance: <code>{"time": 1, "y": 512, "x": 512}</code></li>
 </ul>
 <hr />
-<h2 id="troubleshooting">Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permanent link">&para;</a></h2>
+<h2 id="troubleshooting">Troubleshooting</h2>
 <table>
 <thead>
 <tr>
@@ -912,26 +945,24 @@ If a CRS is missing from the output, it’s written from the AOI before export.<
 </tbody>
 </table>
 <hr />
-<h2 id="how-the-composite-is-formed">How the Composite Is Formed<a class="headerlink" href="#how-the-composite-is-formed" title="Permanent link">&para;</a></h2>
+<h2 id="how-the-composite-is-formed">How the Composite Is Formed</h2>
 <ul>
 <li><strong>Per scene:</strong> invalid pixels masked, reflectance scaled, NDVI computed  </li>
 <li><strong>Per year:</strong> NDVI reduced with <code>.max(dim="time", skipna=True)</code>  </li>
 <li><strong>Output:</strong> float32 COG with CRS and transform set from NIR band</li>
 </ul>
 <p>Alternative reducers:</p>
-<div class="codehilite"><pre><span></span><code><span class="c1"># Median</span>
-<span class="n">ndvi_med</span> <span class="o">=</span> <span class="n">ndvi_t</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="s2">&quot;time&quot;</span><span class="p">,</span> <span class="n">skipna</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<pre><code class="language-python"># Median
+ndvi_med = ndvi_t.median(dim=&quot;time&quot;, skipna=True)
 
-<span class="c1"># 95th percentile</span>
-<span class="n">ndvi_med</span> <span class="o">=</span> <span class="n">ndvi_t</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="mf">0.95</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="s2">&quot;time&quot;</span><span class="p">,</span> <span class="n">skipna</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</code></pre></div>
-
+# 95th percentile
+ndvi_med = ndvi_t.quantile(0.95, dim=&quot;time&quot;, skipna=True)
+</code></pre>
 <hr />
-<h2 id="next-steps">Next Steps<a class="headerlink" href="#next-steps" title="Permanent link">&para;</a></h2>
+<h2 id="next-steps">Next Steps</h2>
 <p>Once the composites are generated, open the viewer:</p>
-<div class="codehilite"><pre><span></span><code>streamlit<span class="w"> </span>run<span class="w"> </span>src/streamlit.py
-</code></pre></div>
-
+<pre><code class="language-bash">streamlit run src/streamlit.py
+</code></pre>
 <p>This allows interactive exploration, year comparison, and ΔNDVI visualization.</p>
 
 
@@ -952,6 +983,12 @@ If a CRS is missing from the output, it’s written from the AOI before export.<
           
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
         
       </main>
       
@@ -981,7 +1018,7 @@ If a CRS is missing from the output, it’s written from the AOI before export.<
     
     
       
-      <script id="__config" type="application/json">{"base": "..", "features": ["navigation.instant", "navigation.expand", "search.highlight"], "search": "../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"base": "..", "features": ["navigation.tabs", "navigation.expand", "navigation.top", "toc.integrate", "search.suggest", "content.code.copy"], "search": "../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../assets/javascripts/bundle.f55a23d4.min.js"></script>

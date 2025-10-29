@@ -6,25 +6,27 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="NDVI-based vegetation change visualization (1985–2024)">
+        <meta name="description" content="Satellite-based NDVI change detection (1985–2024)">
       
       
         <meta name="author" content="Lachlan Black">
       
       
-      
-        <link rel="prev" href="..">
-      
-      
-        <link rel="next" href="../streamlit_app/">
+        <link rel="canonical" href="https://cryoaether.github.io/deforestation-viewer/create_aoi/">
       
       
-      <link rel="icon" href="../assets/images/favicon.png">
+        <link rel="prev" href="../install/">
+      
+      
+        <link rel="next" href="../ndvi/">
+      
+      
+      <link rel="icon" href="../assets/readme/1995.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.22">
     
     
       
-        <title>Creating an AOI - Deforestation Viewer</title>
+        <title>Create AOI - Deforestation Viewer</title>
       
     
     
@@ -67,7 +69,7 @@
     
     
     
-    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="green" data-md-color-accent="lime">
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="green" data-md-color-accent="light-green">
   
     
     <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
@@ -88,14 +90,11 @@
     
       
 
-  
-
-<header class="md-header md-header--shadow" data-md-component="header">
+<header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
     <a href=".." title="Deforestation Viewer" class="md-header__button md-logo" aria-label="Deforestation Viewer" data-md-component="logo">
       
-  
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+  <img src="../assets/readme/1995.png" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -112,7 +111,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Creating an AOI
+              Create AOI
             
           </span>
         </div>
@@ -125,7 +124,7 @@
     
     
     
-    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="green" data-md-color-accent="lime"  aria-hidden="true"  type="radio" name="__palette" id="__palette_0">
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="green" data-md-color-accent="light-green"  aria-hidden="true"  type="radio" name="__palette" id="__palette_0">
     
   
 </form>
@@ -161,6 +160,8 @@
         </button>
       </nav>
       
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
     </form>
     <div class="md-search__output">
       <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
@@ -184,7 +185,7 @@
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
   </div>
   <div class="md-source__repository">
-    GitHub
+    CryoAether/deforestation-viewer
   </div>
 </a>
       </div>
@@ -197,6 +198,150 @@
       
       
         
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href=".." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../install/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Installation
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    <li class="md-tabs__item md-tabs__item--active">
+      <a href="./" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Create AOI
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../ndvi/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  NDVI Computation
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../search_download/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Data Search & Download
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../streamlit_app/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Streamlit Viewer
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../troubleshooting/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Troubleshooting
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
           
         
       
@@ -211,13 +356,16 @@
                     
 
 
+  
 
-<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
     <a href=".." title="Deforestation Viewer" class="md-nav__button md-logo" aria-label="Deforestation Viewer" data-md-component="logo">
       
-  
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+  <img src="../assets/readme/1995.png" alt="logo">
 
     </a>
     Deforestation Viewer
@@ -230,7 +378,7 @@
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
   </div>
   <div class="md-source__repository">
-    GitHub
+    CryoAether/deforestation-viewer
   </div>
 </a>
     </div>
@@ -263,6 +411,28 @@
       
   
   
+  
+  
+    <li class="md-nav__item">
+      <a href="../install/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Installation
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
     
   
   
@@ -280,7 +450,7 @@
   
   
   <span class="md-ellipsis">
-    Creating an AOI
+    Create AOI
     
   </span>
   
@@ -293,7 +463,7 @@
   
   
   <span class="md-ellipsis">
-    Creating an AOI
+    Create AOI
     
   </span>
   
@@ -441,34 +611,12 @@
   
   
     <li class="md-nav__item">
-      <a href="../streamlit_app/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Streamlit App
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../ndvi/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
-    NDVI Functions
+    NDVI Computation
     
   </span>
   
@@ -490,7 +638,51 @@
   
   
   <span class="md-ellipsis">
-    Search & Download Pipeline
+    Data Search & Download
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../streamlit_app/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Streamlit Viewer
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../troubleshooting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Troubleshooting
     
   </span>
   
@@ -507,143 +699,6 @@
               </div>
             
             
-              
-              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
-                <div class="md-sidebar__scrollwrap">
-                  <div class="md-sidebar__inner">
-                    
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#1-install-qgis" class="md-nav__link">
-    <span class="md-ellipsis">
-      1. Install QGIS
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#2-add-a-basemap" class="md-nav__link">
-    <span class="md-ellipsis">
-      2. Add a Basemap
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="2. Add a Basemap">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#install-quickmapservices" class="md-nav__link">
-    <span class="md-ellipsis">
-      Install QuickMapServices
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#add-a-basemap" class="md-nav__link">
-    <span class="md-ellipsis">
-      Add a Basemap
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#3-draw-your-aoi" class="md-nav__link">
-    <span class="md-ellipsis">
-      3. Draw Your AOI
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#4-export-to-geojson" class="md-nav__link">
-    <span class="md-ellipsis">
-      4. Export to GeoJSON
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#5-verify-the-aoi" class="md-nav__link">
-    <span class="md-ellipsis">
-      5. Verify the AOI
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="5. Verify the AOI">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#option-a-qgis" class="md-nav__link">
-    <span class="md-ellipsis">
-      Option A — QGIS
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#option-b-python" class="md-nav__link">
-    <span class="md-ellipsis">
-      Option B — Python
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#6-troubleshooting" class="md-nav__link">
-    <span class="md-ellipsis">
-      6. Troubleshooting
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#7-next-steps" class="md-nav__link">
-    <span class="md-ellipsis">
-      7. Next Steps
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-                  </div>
-                </div>
-              </div>
-            
           
           
             <div class="md-content" data-md-component="content">
@@ -656,10 +711,10 @@
   
 
 
-<h1 id="creating-a-custom-area-of-interest-aoi">Creating a Custom Area of Interest (AOI)<a class="headerlink" href="#creating-a-custom-area-of-interest-aoi" title="Permanent link">&para;</a></h1>
+<h1 id="creating-a-custom-area-of-interest-aoi">Creating a Custom Area of Interest (AOI)</h1>
 <p>This guide explains how to create your own <strong>Area of Interest (AOI)</strong> for the <em>Deforestation Viewer</em>, allowing you to analyze NDVI change over any chosen region.</p>
 <hr />
-<h2 id="1-install-qgis">1. Install QGIS<a class="headerlink" href="#1-install-qgis" title="Permanent link">&para;</a></h2>
+<h2 id="1-install-qgis">1. Install QGIS</h2>
 <p>Download and install <strong>QGIS 3.x</strong> from the official website:</p>
 <p><a href="https://qgis.org">https://qgis.org</a></p>
 <p>During installation:
@@ -667,14 +722,14 @@
 - Ensure <strong>GDAL</strong> support is installed (included in recent QGIS versions).</p>
 <p>Once installed, launch QGIS. You should see an empty map canvas.</p>
 <hr />
-<h2 id="2-add-a-basemap">2. Add a Basemap<a class="headerlink" href="#2-add-a-basemap" title="Permanent link">&para;</a></h2>
+<h2 id="2-add-a-basemap">2. Add a Basemap</h2>
 <p>QGIS opens with a blank grid by default. To add a satellite basemap, install the <strong>QuickMapServices</strong> plugin.</p>
-<h3 id="install-quickmapservices">Install QuickMapServices<a class="headerlink" href="#install-quickmapservices" title="Permanent link">&para;</a></h3>
+<h3 id="install-quickmapservices">Install QuickMapServices</h3>
 <ol>
 <li>In the menu bar, go to <strong>Plugins → Manage and Install Plugins…</strong>  </li>
 <li>Search for <strong>QuickMapServices</strong> and click <strong>Install Plugin</strong>.</li>
 </ol>
-<h3 id="add-a-basemap">Add a Basemap<a class="headerlink" href="#add-a-basemap" title="Permanent link">&para;</a></h3>
+<h3 id="add-a-basemap">Add a Basemap</h3>
 <ol>
 <li>Go to <strong>Web → QuickMapServices → Settings</strong>  </li>
 <li>Click <strong>More Services → Get Contributed Pack → OK</strong>  </li>
@@ -683,7 +738,7 @@
 <p>You should now see high-resolution satellite imagery.<br />
 This provides a visual reference for accurately drawing your AOI.</p>
 <hr />
-<h2 id="3-draw-your-aoi">3. Draw Your AOI<a class="headerlink" href="#3-draw-your-aoi" title="Permanent link">&para;</a></h2>
+<h2 id="3-draw-your-aoi">3. Draw Your AOI</h2>
 <ol>
 <li>In the <strong>Layers panel</strong>, select <strong>New Shapefile Layer → Polygon</strong><br />
 <em>(or use </em><em>Layer → Create Layer → New GeoPackage Layer</em><em> if preferred)</em>  </li>
@@ -717,11 +772,10 @@ This provides a visual reference for accurately drawing your AOI.</p>
 Start with a relatively small AOI (a few thousand km² or less) when testing.<br />
 Larger AOIs may take significantly longer to process.</p>
 <hr />
-<h2 id="4-export-to-geojson">4. Export to GeoJSON<a class="headerlink" href="#4-export-to-geojson" title="Permanent link">&para;</a></h2>
+<h2 id="4-export-to-geojson">4. Export to GeoJSON</h2>
 <p>The viewer expects your AOI to be stored as a GeoJSON file at:</p>
-<div class="codehilite"><pre><span></span><code>data/aoi/roi.geojson
-</code></pre></div>
-
+<pre><code>data/aoi/roi.geojson
+</code></pre>
 <p>To export:</p>
 <ol>
 <li>Right-click your AOI layer → <strong>Export → Save Features As…</strong>  </li>
@@ -737,31 +791,28 @@ Larger AOIs may take significantly longer to process.</p>
    </p>
 
 <p>Your project directory should now look like:</p>
-<div class="codehilite"><pre><span></span><code>deforestation-viewer/
+<pre><code>deforestation-viewer/
 ├── data/
 │   └── aoi/
 │       └── roi.geojson
-</code></pre></div>
-
+</code></pre>
 <hr />
-<h2 id="5-verify-the-aoi">5. Verify the AOI<a class="headerlink" href="#5-verify-the-aoi" title="Permanent link">&para;</a></h2>
-<h3 id="option-a-qgis">Option A — QGIS<a class="headerlink" href="#option-a-qgis" title="Permanent link">&para;</a></h3>
+<h2 id="5-verify-the-aoi">5. Verify the AOI</h2>
+<h3 id="option-a-qgis">Option A — QGIS</h3>
 <p>Re-open the saved GeoJSON file in QGIS to ensure it displays correctly and covers the intended region.</p>
-<h3 id="option-b-python">Option B — Python<a class="headerlink" href="#option-b-python" title="Permanent link">&para;</a></h3>
+<h3 id="option-b-python">Option B — Python</h3>
 <p>Verify the AOI programmatically:</p>
-<div class="codehilite"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">geopandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">gpd</span>
+<pre><code class="language-python">import geopandas as gpd
 
-<span class="n">gdf</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="s2">&quot;data/aoi/roi.geojson&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">gdf</span><span class="o">.</span><span class="n">crs</span><span class="p">,</span> <span class="n">gdf</span><span class="o">.</span><span class="n">total_bounds</span><span class="p">)</span>
-</code></pre></div>
-
+gdf = gpd.read_file(&quot;data/aoi/roi.geojson&quot;)
+print(gdf.crs, gdf.total_bounds)
+</code></pre>
 <p>Expected output:</p>
-<div class="codehilite"><pre><span></span><code><span class="n">EPSG</span><span class="o">:</span><span class="mi">4326</span><span class="w"> </span><span class="n">and</span><span class="w"> </span><span class="n">valid</span><span class="w"> </span><span class="n">longitude</span><span class="o">/</span><span class="n">latitude</span><span class="w"> </span><span class="n">bounds</span>
-</code></pre></div>
-
+<pre><code>EPSG:4326 and valid longitude/latitude bounds
+</code></pre>
 <p>If CRS or coordinates appear incorrect, re-export the file with the correct settings.</p>
 <hr />
-<h2 id="6-troubleshooting">6. Troubleshooting<a class="headerlink" href="#6-troubleshooting" title="Permanent link">&para;</a></h2>
+<h2 id="6-troubleshooting">6. Troubleshooting</h2>
 <table>
 <thead>
 <tr>
@@ -794,7 +845,7 @@ Larger AOIs may take significantly longer to process.</p>
 </tbody>
 </table>
 <hr />
-<h2 id="7-next-steps">7. Next Steps<a class="headerlink" href="#7-next-steps" title="Permanent link">&para;</a></h2>
+<h2 id="7-next-steps">7. Next Steps</h2>
 <p>Once your AOI is saved and verified, you can:
 - Run the NDVI processing pipeline (<code>search_download.py</code>) to generate annual composites<br />
 - Visualize NDVI and vegetation change in the Streamlit app (<code>streamlit_app.py</code>)</p>
@@ -820,6 +871,12 @@ Larger AOIs may take significantly longer to process.</p>
           
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
         
       </main>
       
@@ -849,7 +906,7 @@ Larger AOIs may take significantly longer to process.</p>
     
     
       
-      <script id="__config" type="application/json">{"base": "..", "features": ["navigation.instant", "navigation.expand", "search.highlight"], "search": "../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"base": "..", "features": ["navigation.tabs", "navigation.expand", "navigation.top", "toc.integrate", "search.suggest", "content.code.copy"], "search": "../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../assets/javascripts/bundle.f55a23d4.min.js"></script>
