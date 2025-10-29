@@ -59,9 +59,9 @@ Use the controls to view yearly NDVI or compare change between two years.
 | **2021** | Widespread NDVI loss, visible deforestation |
 
 <p align="center">
-  <img src="assets/readme/1995.png" width="31%" alt="NDVI 1995">
-  <img src="assets/readme/2002.png" width="31%" alt="NDVI 2002">
-  <img src="assets/readme/2021.png" width="31%" alt="NDVI 2021">
+  <img src="../assets/readme/1995.png" width="31%" alt="NDVI 1995">
+  <img src="../assets/readme/2002.png" width="31%" alt="NDVI 2002">
+  <img src="../assets/readme/2021.png" width="31%" alt="NDVI 2021">
 </p>
 <p align="center">
   <em>NDVI change progression — 1995 → 2002 → 2021</em>
