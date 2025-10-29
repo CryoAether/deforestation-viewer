@@ -14,7 +14,6 @@ import dask
 from dask.diagnostics import ProgressBar
 from tqdm.auto import tqdm
 from ndvi import compute_ndvi_mixed, mask_clouds, mask_clouds_mixed
-from collections import Counter
 
 # ---- Dataset registry (year → collection/bands/mask) ----
 DATASETS = {
@@ -57,7 +56,6 @@ dask.config.set(scheduler="threads", num_workers=6)
 ProgressBar().register()
 
 CATALOG = "https://planetarycomputer.microsoft.com/api/stac/v1"
-COLLECTION = "sentinel-2-l2a"
 
 # throttle: set MAX_SCENES=None to process all
 _env = os.getenv("MAX_SCENES", "none").lower()  # Testing phase, low value for quick results
