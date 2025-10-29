@@ -1,0 +1,30 @@
+site_name: Deforestation Viewer
+site_description: NDVI-based vegetation change visualization (1985–2024)
+site_author: Lachlan Black
+repo_url: https://github.com/CryoAether/deforestation-viewer
+repo_name: GitHub
+
+theme:
+  name: material
+  palette:
+    - scheme: default
+      primary: green
+      accent: lime
+  features:
+    - navigation.instant
+    - navigation.expand
+    - search.highlight
+
+nav:
+  - Home: index.md
+  - Creating an AOI: create_aoi.md
+  - Streamlit App: streamlit.md
+  - NDVI Functions: ndvi.md
+  - Search & Download Pipeline: search_download.md
+
+markdown_extensions:
+  - admonition
+  - codehilite
+  - toc:
+      permalink: true
+  - tables
