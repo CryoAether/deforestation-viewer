@@ -1,4 +1,4 @@
-# Streamlit App Guide — Deforestation Viewer
+# Streamlit App Guide — (streamlit_app.py)
 
 This page explains how to run the Streamlit map, compare years, tune the visualization, and adjust code paths when needed.
 
