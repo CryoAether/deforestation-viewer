@@ -1,31 +1,48 @@
-# data (don’t commit big rasters or intermediates)
+# ======================
+# Data & large outputs
+# ======================
 src/legacy/
+
 data/raw/
 data/interim/
+
+# Ignore all composites except specific small examples
 data/composites/*
 !data/composites/.gitkeep
 !data/composites/ndvi_median_1995.tif
 !data/composites/ndvi_median_2002.tif
-!data/composites/ndvi_median_2021.tifdata/change/
-data/composites/-old
-data/-dep
+!data/composites/ndvi_median_2021.tif
+
+data/change/
+data/composites-old/
+data/dep/
+
+# Ignore shapefile sidecars
 data/aoi/*.shp
 data/aoi/*.shx
 data/aoi/*.dbf
 data/aoi/*.prj
 data/aoi/*.cpg
-__pycache__/
 
+# ======================
+# Python cache & compiled files
+# ======================
+__pycache__/
 *.pyc
+
+# ======================
+# Raster & geospatial intermediates
+# ======================
 *.tif
 *.tiff
 *.nc
 *.zip
 *.SAFE
 
-# environment & cache
+# ======================
+# Environment, notebooks, misc
+# ======================
 .env
 .venv
-__pycache__/
 .ipynb_checkpoints/
 .DS_Store
