@@ -83,6 +83,12 @@ To export:
    - **File name:** `data/aoi/roi.geojson`  
 3. Click **OK**
 
+   <p align="left">
+    <img src="../assets/aoi/6.png" width="500" alt="Save AOI Layer">
+    <img src="../assets/aoi/7.png" width="250" alt="Choose polygon type">
+   </p>
+
+   
 Your project directory should now look like:
 
 ```
