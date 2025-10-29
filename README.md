@@ -47,7 +47,7 @@ deforestation-viewer/
 
 ### 1. Set up the environment
 
-Using the included example AOI (or [create your own](docs\create_aoi.md)):
+Using the included example AOI (or [create your own](docs/create_aoi.md)):
 
 ```bash
 conda create -n deforest python=3.11
@@ -100,4 +100,5 @@ Use the app’s controls to:
 - [Generate NDVI composites](search_download.md)  
 - [Explore in Streamlit](streamlit.md)  
 - [Learn about NDVI computation](ndvi.md)
+
 
