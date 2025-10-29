@@ -13,11 +13,6 @@ def compute_ndvi_mixed(red, nir, cfg):
     ndvi = (nirf - redf) / (nirf + redf + 1e-6)
     return ndvi.astype("float32")
 
-# Masks out invalid pixels (cloud, water, snow, etc.) for Sentinel-2 using the SCL band.
-def mask_clouds(scl, arr):
-    scl_i = scl.round().astype("int16")  # ensure categorical ints
-    return arr.where(~np.isin(scl_i, list(SCL_BAD)))
-
 # Applies cloud/water/snow masking for both Landsat and Sentinel datasets.
 def mask_clouds_mixed(qa, arr, cfg):
     if cfg["mask"] == "s2":
