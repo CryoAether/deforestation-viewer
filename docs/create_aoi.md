@@ -43,7 +43,7 @@ This provides a visual reference for accurately drawing your AOI.
 1. In the **Layers panel**, select **New Shapefile Layer → Polygon**  
    *(or use **Layer → Create Layer → New GeoPackage Layer** if preferred)*  
 
-   <p align="center">
+   <p align="left">
     <img src="../assets/aoi/1.png" width="500" alt="Creating new polygon layer in QGIS">
    </p>
 
