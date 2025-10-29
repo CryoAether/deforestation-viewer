@@ -47,6 +47,15 @@ deforestation-viewer/
 
 ### 1. Set up the environment
 
+### Clone the Repository
+
+To download the project and start working locally:
+
+```bash
+git clone https://github.com/CryoAether/deforestation-viewer.git
+cd deforestation-viewer
+```
+
 Using the included example AOI (or [create your own](docs/create_aoi.md)):
 
 ```bash
@@ -100,6 +109,7 @@ Use the app’s controls to:
 - [Generate NDVI composites](docs/search_download.md)  
 - [Explore in Streamlit](docs/streamlit_app.md)  
 - [Learn about NDVI computation](docs/ndvi.md)
+
 
 
 
