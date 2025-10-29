@@ -96,9 +96,10 @@ Use the app’s controls to:
 
 ## Next Steps
 
-- [Create your own AOI](create_aoi.md)  
-- [Generate NDVI composites](search_download.md)  
-- [Explore in Streamlit](streamlit.md)  
-- [Learn about NDVI computation](ndvi.md)
+- [Create your own AOI](docs/create_aoi.md)  
+- [Generate NDVI composites](docs/search_download.md)  
+- [Explore in Streamlit](docs/streamlit.md)  
+- [Learn about NDVI computation](docs/ndvi.md)
+
 
 
