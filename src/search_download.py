@@ -210,7 +210,19 @@ def stack_for_year(items, aoi_gdf, cfg, resolution=30):
         except Exception as e:
             print(f"Warning: unable to write CRS ({target_epsg}): {e}")
     return stack  # dims: time, band, y, x
-
+def reduce_ndvi_over_time(ndvi_t, reducer: str):
+    reducer = (reducer or "max").lower()
+    if reducer == "max":
+        out = ndvi_t.max(dim="time", skipna=True)
+    elif reducer == "median":
+        out = ndvi_t.median(dim="time", skipna=True)
+    elif reducer == "p95":
+        out = ndvi_t.quantile(0.95, dim="time", skipna=True).squeeze(drop=True)
+    else:
+        print(f"Unknown REDUCER='{reducer}', falling back to 'max'.")
+        out = ndvi_t.max(dim="time", skipna=True)
+    return out
+    
 def main():
     aoi_gdf, aoi_geojson = load_aoi("data/aoi/roi.geojson")
     # save NDVI composites under data/composites/ (what your app expects)
@@ -291,9 +303,11 @@ def main():
         ndvi_t = compute_ndvi_mixed(red, nir, cfg)           # applies per-dataset scale/offset safely
         ndvi_t = mask_clouds_mixed(qa, ndvi_t, cfg)          # S2 SCL vs Landsat QA_PIXEL handled here
 
-        print(f"[{y}] Reducing to seasonal composite (max over time) …")
+
+        reducer = os.getenv("REDUCER", "max").lower()
+        print(f"[{y}] Reducing to seasonal composite ({reducer}) …")
         ndvi_t = ndvi_t.chunk({"time": 1, "y": 1024, "x": 1024})
-        ndvi_med = ndvi_t.max(dim="time", skipna=True)
+        ndvi_med = reduce_ndvi_over_time(ndvi_t, reducer)
         ndvi_med = ndvi_med.where(np.isfinite(ndvi_med))
 
         out_tif = outdir / f"ndvi_median_{y}.tif"
