@@ -98,8 +98,9 @@ Use the app’s controls to:
 
 - [Create your own AOI](docs/create_aoi.md)  
 - [Generate NDVI composites](docs/search_download.md)  
-- [Explore in Streamlit](docs/streamlit.md)  
+- [Explore in Streamlit](docs/streamlit_app.md)  
 - [Learn about NDVI computation](docs/ndvi.md)
+
 
 
 
