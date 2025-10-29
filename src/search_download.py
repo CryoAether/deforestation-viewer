@@ -219,7 +219,7 @@ def main():
     outdir.mkdir(parents=True, exist_ok=True)
     years = list(range(1985, 2025))
 
-    #years = [2000]  # : 2020, 2021, 2022, 2023, 2024
+    #years = [1995]  # : 2020, 2021, 2022, 2023, 2024
     for y in tqdm(years, desc="Years"):
         ds_name, cfg = select_dataset(y)
         print(f"[{y}] Using dataset {ds_name}: {cfg['collection']}")

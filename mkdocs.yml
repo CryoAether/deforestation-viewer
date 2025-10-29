@@ -18,7 +18,7 @@ theme:
 nav:
   - Home: index.md
   - Creating an AOI: create_aoi.md
-  - Streamlit App: streamlit.md
+  - Streamlit App: streamlit_app.md
   - NDVI Functions: ndvi.md
   - Search & Download Pipeline: search_download.md
 
