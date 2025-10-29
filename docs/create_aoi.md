@@ -51,7 +51,13 @@ This provides a visual reference for accurately drawing your AOI.
 2. Set **CRS** to `EPSG:4326 (WGS 84)`  
 3. Click **OK** to create the layer  
 4. Right-click the new layer → **Toggle Editing**  
+   <p align="left">
+    <img src="../assets/aoi/2.png" width="500" alt="Toggling editing in QGIS">
+   </p>
 5. Use the **Add Polygon Feature** tool to draw your AOI (e.g., a forest, park, or region of interest)  
+   <p align="left">
+    <img src="../assets/aoi/3.png" width="500" alt="Adding polygon feature">
+   </p>
 6. When done, right-click → **Save Edits**, then toggle editing off
   
 **Tip:**  
