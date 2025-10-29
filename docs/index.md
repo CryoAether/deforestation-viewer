@@ -75,5 +75,5 @@ Use the controls to view yearly NDVI or compare change between two years.
 - [Creating a Custom AOI](create_aoi.md)
 - [NDVI Processing Pipeline](search_download.md)
 - [NDVI Computation & Masking](ndvi.md)
-- [Streamlit Visualization](streamlit.md)
+- [Streamlit Visualization](streamlit_app.md)
 - [Troubleshooting & Error Fixes](troubleshooting.md)

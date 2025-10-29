@@ -29,13 +29,13 @@ theme:
 
 nav:
   - Home: index.md
-  - Installation: install.md
+  - Install: install.md
   - Create AOI: create_aoi.md
-  - Data Search & Download: search_download.md
   - NDVI Computation: ndvi.md
-  - Streamlit Viewer: streamlit.md
+  - NDVI Pipeline (search_download): search_download.md
+  - Streamlit App: streamlit_app.md   # <-- rename from streamlit.md
   - Troubleshooting: troubleshooting.md
-
+  
 plugins:
   - search
   - minify:
