@@ -1,49 +1,105 @@
 # ======================
-# Data & large outputs
+# Python caches / compiled
 # ======================
-src/legacy/
+__pycache__/
+*.py[cod]
+*.pyd
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
 
+# ======================
+# Environments / secrets
+# ======================
+.env
+.venv/
+venv/
+ENV/
+*.env
+*.local
+
+# Conda (optional; keep if you ever export these)
+conda-meta/
+*.conda
+*.mamba
+
+# ======================
+# OS / editor junk
+# ======================
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# ======================
+# Notebooks
+# ======================
+.ipynb_checkpoints/
+
+# ======================
+# Docs build output (MkDocs)
+# ======================
+site/
+
+# ======================
+# Node / React
+# ======================
+web/node_modules/
+web/dist/
+web/.vite/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# ======================
+# Data pipeline outputs (large)
+# ======================
 data/raw/
 data/interim/
 
-# Ignore all composites except specific small examples
+# Ignore all composites by default...
 data/composites/*
+# ...but keep a marker and a few small examples
 !data/composites/.gitkeep
 !data/composites/ndvi_median_1995.tif
 !data/composites/ndvi_median_2002.tif
 !data/composites/ndvi_median_2021.tif
 
+# Delta rasters are generated/cached
 data/change/
+
+# Legacy/old/deprecated folders
 data/composites-old/
 data/dep/
+src/legacy/
 
-# Ignore shapefile sidecars
+# ======================
+# Geospatial sidecars (keep GeoJSON)
+# ======================
 data/aoi/*.shp
 data/aoi/*.shx
 data/aoi/*.dbf
 data/aoi/*.prj
 data/aoi/*.cpg
 
-# ======================
-# Python cache & compiled files
-# ======================
-__pycache__/
-*.pyc
+# If you ever export other GIS formats, ignore them too
+*.gpkg
+*.kml
+*.kmz
 
 # ======================
-# Raster & geospatial intermediates
+# Raster formats (global)
 # ======================
+# Ignore large rasters everywhere by default...
 *.tif
 *.tiff
 *.nc
-*.zip
+*.zarr/
 *.SAFE
+*.zip
 
-# ======================
-# Environment, notebooks, misc
-# ======================
-.env
-.venv
-.ipynb_checkpoints/
-.DS_Store
-site/
+# ...but re-include the small example composites (must come AFTER the ignores above)
+!data/composites/ndvi_median_1995.tif
+!data/composites/ndvi_median_2002.tif
+!data/composites/ndvi_median_2021.tif

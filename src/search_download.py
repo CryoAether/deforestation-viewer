@@ -144,7 +144,14 @@ def search_items(aoi_geojson, start, end, max_cloud=25, cfg=None):
             )
         day = it.datetime.date()
         key = (tile_id, day)
-        if key not in by_key or it.properties["eo:cloud_cover"] < by_key[key].properties["eo:cloud_cover"]:
+        def _cloud(it):
+            v = it.properties.get("eo:cloud_cover", None)
+            try:
+                return float(v) if v is not None else 1e9
+            except Exception:
+                return 1e9
+
+        if key not in by_key or _cloud(it) < _cloud(by_key[key]):
             by_key[key] = it
 
     items = list(by_key.values())
@@ -199,7 +206,7 @@ def stack_for_year(items, aoi_gdf, cfg, resolution=30):
         bounds=(minx, miny, maxx, maxy),
         resolution=resolution,
         chunksize=768,
-        dtype="float64", 
+        dtype="float32", 
         fill_value=0,
         rescale=False,    # we’ll apply scale/offset explicitly
     )
