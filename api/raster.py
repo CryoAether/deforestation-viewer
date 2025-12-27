@@ -19,7 +19,7 @@ def _sample_array(path: pl.Path, max_size: int = 512) -> np.ndarray:
             1,
             out_shape=(out_h, out_w),
             masked=True,
-            resampling=rasterio.enums.Resampling.bilinear,
+            resampling=rasterio.enums.Resampling.nearest,
         )
         arr = np.asarray(data)
         # convert masked -> nan

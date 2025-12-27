@@ -33,10 +33,10 @@ def compute_ndvi_mixed(red, nir, cfg):
 def mask_clouds_mixed(qa, arr, cfg):
     """Mask clouds/snow/shadow/water using dataset-appropriate QA."""
     if cfg["mask"] == "s2":
-        qa_i = qa.round().astype("uint8")
+        qa_i = qa.where(np.isfinite(qa)).fillna(0).round().astype("uint8")
         bad = np.isin(qa_i, SCL_BAD)
         return arr.where(~bad)
     else:
-        qa_u = qa.astype("uint16")
+        qa_u = qa.where(np.isfinite(qa)).fillna(0).astype("uint16")
         bad = (qa_u & _LANDSAT_BAD) != 0
         return arr.where(~bad)

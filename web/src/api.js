@@ -13,4 +13,11 @@ export async function buildDelta(fromYear, toYear) {
   });
   if (!res.ok) throw new Error("Failed to build delta");
   return await res.json();
+  
+}
+
+export async function getBounds(year) {
+  const r = await fetch(`/api/bounds/${year}`);
+  if (!r.ok) throw new Error(`getBounds failed: ${r.status}`);
+  return r.json();
 }

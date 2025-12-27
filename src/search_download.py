@@ -14,7 +14,7 @@ from dask.diagnostics import ProgressBar
 from tqdm.auto import tqdm
 from ndvi import compute_ndvi_mixed, mask_clouds_mixed
 
-# ---- Dataset registry (year → collection/bands/mask) ----
+FILL_VALUE = np.float32(float(os.getenv("FILL_VALUE", "-9999.0")))
 DATASETS = {
     "S2": {
         "years": (2016, 2100),
@@ -207,7 +207,7 @@ def stack_for_year(items, aoi_gdf, cfg, resolution=30):
         resolution=resolution,
         chunksize=768,
         dtype="float32", 
-        fill_value=0,
+        fill_value=FILL_VALUE,
         rescale=False,    # we’ll apply scale/offset explicitly
     )
     stack = stack.chunk({"time": 1, "y": 512, "x": 512})
@@ -235,9 +235,9 @@ def main():
     # save NDVI composites under data/composites/ (what your app expects)
     outdir = pl.Path("data/composites")
     outdir.mkdir(parents=True, exist_ok=True)
-    years = list(range(1985, 2025))
+    # years = list(range(1985, 2025))
 
-    #years = [1995]  # : 2020, 2021, 2022, 2023, 2024
+    years = [2024]  # : 2020, 2021, 2022, 2023, 2024
     for y in tqdm(years, desc="Years"):
         ds_name, cfg = select_dataset(y)
         print(f"[{y}] Using dataset {ds_name}: {cfg['collection']}")
@@ -303,8 +303,9 @@ def main():
         qa  = stack.sel({bdim: qa_key})
 
         # Treat sensor zeros as missing so they don't pollute NDVI
-        red = red.where(red != 0)
-        nir = nir.where(nir != 0)
+        red = red.where(red != FILL_VALUE)
+        nir = nir.where(nir != FILL_VALUE)
+        qa = qa.where(qa!= FILL_VALUE)
 
         print(f"[{y}] Computing NDVI + cloud/snow/water mask …")
         ndvi_t = compute_ndvi_mixed(red, nir, cfg)           # applies per-dataset scale/offset safely

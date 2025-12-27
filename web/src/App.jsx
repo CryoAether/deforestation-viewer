@@ -1,12 +1,24 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { MapContainer, TileLayer } from "react-leaflet";
+import { MapContainer, TileLayer, useMap } from "react-leaflet";
 import { getYears, buildDelta } from "./api.js";
 import NDVILayer from "./layers/NDVILayer.jsx";
 import DeltaLayer from "./layers/DeltaLayer.jsx";
 
 const ESRI = "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}";
 
+function FitBounds({ bounds }) {
+  const map = useMap();
+
+  useEffect(() => {
+    if (bounds && bounds.length === 2) {
+      map.fitBounds(bounds, { padding: [20, 20] });
+    }
+  }, [bounds, map]);
+
+  return null;
+}
 export default function App() {
+  const [bounds, setBounds] = useState(null);
   const [years, setYears] = useState([]);
   const [mode, setMode] = useState("single");
   const [year, setYear] = useState(null);
@@ -19,9 +31,18 @@ export default function App() {
     (async () => {
       const ys = await getYears();
       setYears(ys);
-      setYear(ys[0] ?? null);
-      setFromYear(ys[0] ?? null);
-      setToYear(ys[ys.length - 1] ?? null);
+
+      const first = ys[0] ?? null;
+      const latest = ys.length ? ys[ys.length - 1] : null;
+
+      setYear(latest);
+      setFromYear(first);
+      setToYear(latest);
+
+      if (latest) {
+        const b = await getBounds(latest);
+        setBounds(b.bounds);
+      }
     })();
   }, []);
 
@@ -33,7 +54,6 @@ export default function App() {
     })();
   }, [mode, fromYear, toYear]);
 
-  const center = useMemo(() => [0, 0], []);
 
   return (
     <div style={{ height: "100vh", display: "grid", gridTemplateColumns: "360px 1fr" }}>
@@ -99,7 +119,8 @@ export default function App() {
       </div>
 
       <div style={{ height: "100vh" }}>
-        <MapContainer center={center} zoom={10} style={{ height: "100%", width: "100%" }}>
+        <MapContainer center={[0, 0]} zoom={2} style={{ height: "100%", width: "100%" }}>
+          <FitBounds bounds={bounds} />
           <TileLayer url={ESRI} />
 
           {mode === "single" && year && <NDVILayer year={year} />}
