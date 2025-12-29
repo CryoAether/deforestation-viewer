@@ -11,7 +11,7 @@ The system computes yearly **NDVI (Normalized Difference Vegetation Index)** com
 - Computes NDVI using dataset-specific scale and offset values  
 - Masks clouds, water, snow, and shadows using QA and SCL bands  
 - Outputs **Cloud-Optimized GeoTIFF (COG)** composites per year  
-- Visualizes NDVI and ΔNDVI (change) in a **Streamlit dashboard**  
+- Visualizes NDVI and ΔNDVI (change) in a **FastAPI + React Dashboard**  
 - Streams imagery efficiently via the Planetary Computer — minimal local storage required  
 
 ---
@@ -20,25 +20,8 @@ The system computes yearly **NDVI (Normalized Difference Vegetation Index)** com
 
 **Language:** Python  
 **Core Libraries:** Dask, StackSTAC, Xarray, RioXarray, Rasterio, GeoPandas, NumPy  
-**Visualization:** Streamlit, Leafmap, Matplotlib  
+**Visualization:** FastAPI, React, Leafmap, Matplotlib  
 **Data Source:** Microsoft Planetary Computer STAC API
-
----
-
-## Directory Overview
-
-```
-deforestation-viewer/
-├── data/
-│   ├── aoi/                # AOI GeoJSON files
-│   ├── composites/         # NDVI output rasters
-│   └── change/             # ΔNDVI difference layers
-├── src/
-│   ├── search_download.py  # NDVI composite generator
-│   ├── ndvi.py             # NDVI computation & masking
-│   └── streamlit_app.py    # Visualization interface
-└── docs/                   # Documentation for MkDocs
-```
 
 ---
 
@@ -60,6 +43,7 @@ deforestation-viewer/
 </p>
 
 ---
+
 
 
 
