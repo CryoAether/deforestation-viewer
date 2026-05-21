@@ -26,15 +26,15 @@ from ndvi import compute_ndvi_mixed, mask_clouds_mixed
 # Config
 # =========================
 CATALOG = "https://planetarycomputer.microsoft.com/api/stac/v1"
-FILL_VALUE = np.nan
 
 # Expand window to catch the full dry season (June -> Sept/Oct)
 WINDOW_WEEKS = int(os.getenv("WINDOW_WEEKS", "16"))
 WINDOW_START_MONTH = int(os.getenv("WINDOW_START_MONTH", "6"))
 WINDOW_START_DAY = int(os.getenv("WINDOW_START_DAY", "1"))
 
-# Keep cloud cap relatively high to allow scenes with partial clear areas
-MAX_CLOUD = int(os.getenv("MAX_CLOUD", "75"))
+# BUMP TO 100: We want ALL passes. A scene might be 95% cloudy overall, 
+# but perfectly clear over your specific AOI. Let our mask do the work!
+MAX_CLOUD = int(os.getenv("MAX_CLOUD", "100"))
 
 # Cap the max number of scenes to stack to avoid blowing up memory
 MAX_SCENES_TO_STACK = int(os.getenv("MAX_SCENES_TO_STACK", "40"))
@@ -119,17 +119,13 @@ def gather_scenes_for_year(
     aoi_geojson: dict,
     cfg: dict,
 ) -> List:
-    """
-    Search STAC for all scenes in the time window intersecting the AOI.
-    We grab everything under the MAX_CLOUD threshold.
-    """
     client = Client.open(CATALOG)
     start, end = seasonal_window(year, WINDOW_START_MONTH, WINDOW_START_DAY, WINDOW_WEEKS)
     
     print(f"[{year}] Searching {cfg['collection']} from {start} to {end} (Max Cloud: {MAX_CLOUD}%)")
     
-    # query to filter by cloud cover
-    query = {"eo:cloud_cover": {"lt": MAX_CLOUD}}
+    # Only append the cloud query if we actually want to limit it
+    query = {"eo:cloud_cover": {"lt": MAX_CLOUD}} if MAX_CLOUD < 100 else None
     
     search = client.search(
         collections=[cfg["collection"]],
@@ -149,17 +145,13 @@ def gather_scenes_for_year(
             uniq.append(it)
             
     # CRITICAL FIX for 2003-2012 "Zebra Stripes": 
-    # If using L57, heavily prefer Landsat 5 (LT05) over Landsat 7 (LE07) due to SLC failure
     if cfg["collection"] == "landsat-c2-l2" and 2003 <= year <= 2012:
         l5_items = [it for it in uniq if "LT05" in it.id]
-        if len(l5_items) >= 5: # If we have enough L5 scenes, ditch L7 completely
+        if len(l5_items) >= 5: 
             uniq = l5_items
             print(f"[{year}] Prioritizing Landsat 5 to avoid SLC-off stripes. Dropped Landsat 7.")
             
-    # Sort by cloud cover to ensure our 'MAX_SCENES_TO_STACK' slice are the best ones
     uniq.sort(key=lambda x: x.properties.get("eo:cloud_cover", 100))
-    
-    # Cap the stack size so we don't blow out memory
     final_items = uniq[:MAX_SCENES_TO_STACK]
     
     print(f"[{year}] Found {len(uniq)} scenes. Stacking top {len(final_items)}.")
@@ -177,44 +169,35 @@ def build_composite_from_scenes(
 
     assets = [cfg["assets"]["red"], cfg["assets"]["nir"], cfg["assets"]["qa"]]
     
-    # Build the deep temporal stack
     stack = st.stack(
         items,
         assets=assets,
         epsg=epsg,
         bounds=bounds,
         resolution=cfg["resolution"],
-        chunksize=1024, # Larger chunks for efficiency over deep time
+        chunksize=1024, 
         dtype="float32",
-        fill_value=FILL_VALUE,
+        fill_value=np.float32("nan"), # FIX: Explicitly cast NaN to 32-bit float
         rescale=False,
     )
 
     if not stack.rio.crs:
         stack = stack.rio.write_crs(epsg)
 
-    # Extract bands
     red = stack.sel(band=cfg["assets"]["red"]).astype("float32")
     nir = stack.sel(band=cfg["assets"]["nir"]).astype("float32")
     qa = stack.sel(band=cfg["assets"]["qa"])
 
-    # Compute NDVI for all pixels across all time slices
     print(f"  -> Computing NDVI and applying masks across {len(items)} scenes...")
     ndvi = compute_ndvi_mixed(red, nir, cfg)
     
-    # Drop cloudy/bad pixels to NaN
     ndvi_m = mask_clouds_mixed(qa, ndvi, cfg)
 
-    # TRUE MEDIAN COMPOSITE:
-    # Take the median along the time dimension, ignoring the NaNs (clouds)
-    # This automatically "fills the holes" using clear pixels from other scenes
     print("  -> Executing Median Reducer (this may take a minute)...")
     comp = ndvi_m.median(dim="time", skipna=True)
     
-    # Ensure any remaining fully-clouded pixels stay NaN
     comp = comp.where(np.isfinite(comp))
 
-    # Georeference and Save
     comp.rio.write_crs(epsg, inplace=True)
     res = cfg["resolution"]
     minx, miny, maxx, maxy = bounds
@@ -235,8 +218,6 @@ def build_composite_from_scenes(
 def main():
     aoi_gdf, aoi_geojson = load_aoi(AOI_PATH)
 
-    # Loop from 1985 to present (or whatever range you need)
-    # For testing, you might want to change this to: range(2005, 2009) to verify L7 fixes
     start_year = int(os.getenv("START_YEAR", "1985"))
     end_year = int(os.getenv("END_YEAR", "2024"))
     
