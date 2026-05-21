@@ -9,7 +9,7 @@ from typing import Dict, List, Tuple
 
 import numpy as np
 import geopandas as gpd
-import rioxarray  # registers .rio accessor
+import rioxarray  
 import rasterio
 
 from pystac_client import Client
@@ -18,7 +18,6 @@ import stackstac as st
 
 import dask
 from dask.diagnostics import ProgressBar
-from tqdm.auto import tqdm
 
 from ndvi import compute_ndvi_mixed, mask_clouds_mixed
 
@@ -27,35 +26,26 @@ from ndvi import compute_ndvi_mixed, mask_clouds_mixed
 # Config
 # =========================
 CATALOG = "https://planetarycomputer.microsoft.com/api/stac/v1"
-
-# Use NaN as fill for float32 stackstac arrays to avoid dtype/fill conflicts
 FILL_VALUE = np.nan
 
-# How many best scenes (per year) to keep for compositing
-BEST_K = int(os.getenv("BEST_K", "8"))
-
-# Seasonal window controls
-WINDOW_WEEKS = int(os.getenv("WINDOW_WEEKS", "8"))
-WINDOW_START_MONTH = int(os.getenv("WINDOW_START_MONTH", "7"))
+# Expand window to catch the full dry season (June -> Sept/Oct)
+WINDOW_WEEKS = int(os.getenv("WINDOW_WEEKS", "16"))
+WINDOW_START_MONTH = int(os.getenv("WINDOW_START_MONTH", "6"))
 WINDOW_START_DAY = int(os.getenv("WINDOW_START_DAY", "1"))
 
-# Day-by-day search step (1 = daily)
-DAY_STEP = int(os.getenv("DAY_STEP", "1"))
+# Keep cloud cap relatively high to allow scenes with partial clear areas
+MAX_CLOUD = int(os.getenv("MAX_CLOUD", "75"))
 
-# Candidate scene search per day (limit results pulled from STAC)
-PER_DAY_LIMIT = int(os.getenv("PER_DAY_LIMIT", "50"))
+# Cap the max number of scenes to stack to avoid blowing up memory
+MAX_SCENES_TO_STACK = int(os.getenv("MAX_SCENES_TO_STACK", "40"))
 
-# Scene-level cloud cap for initial STAC filtering (still useful, but not relied on)
-MAX_CLOUD = int(os.getenv("MAX_CLOUD", "80"))
-
-# Output
 OUTDIR = pl.Path(os.getenv("OUTDIR", "data/composites"))
 OUTDIR.mkdir(parents=True, exist_ok=True)
 
 AOI_PATH = os.getenv("AOI_PATH", "data/aoi/roi.geojson")
 
-# Dask
-dask.config.set(scheduler="threads", num_workers=int(os.getenv("DASK_WORKERS", "6")))
+# Dask optimization for deep temporal stacks
+dask.config.set(scheduler="threads", num_workers=int(os.getenv("DASK_WORKERS", "4")))
 ProgressBar().register()
 
 
@@ -101,10 +91,10 @@ def select_dataset(year: int) -> Tuple[str, dict]:
     raise ValueError(f"No dataset configured for year {year}")
 
 
-def seasonal_window(year: int, start_month: int, start_day: int, weeks: int) -> Tuple[date, date]:
+def seasonal_window(year: int, start_month: int, start_day: int, weeks: int) -> Tuple[str, str]:
     start = date(year, start_month, start_day)
     end = start + timedelta(weeks=weeks) - timedelta(days=1)
-    return start, end
+    return start.isoformat(), end.isoformat()
 
 
 def load_aoi(path: str = AOI_PATH) -> Tuple[gpd.GeoDataFrame, dict]:
@@ -124,157 +114,56 @@ def _aoi_bounds_in_epsg(aoi_gdf: gpd.GeoDataFrame, epsg: int) -> Tuple[float, fl
     return float(minx), float(miny), float(maxx), float(maxy)
 
 
-def _do_search_day(
-    client: Client,
-    collection: str,
+def gather_scenes_for_year(
+    year: int,
     aoi_geojson: dict,
-    day: date,
-    max_cloud: int,
+    cfg: dict,
 ) -> List:
-    # Search one day at a time (ISO interval)
-    start = day.isoformat()
-    end = (day + timedelta(days=1)).isoformat()
-
-    query = {"eo:cloud_cover": {"lt": max_cloud}} if max_cloud is not None else None
-
+    """
+    Search STAC for all scenes in the time window intersecting the AOI.
+    We grab everything under the MAX_CLOUD threshold.
+    """
+    client = Client.open(CATALOG)
+    start, end = seasonal_window(year, WINDOW_START_MONTH, WINDOW_START_DAY, WINDOW_WEEKS)
+    
+    print(f"[{year}] Searching {cfg['collection']} from {start} to {end} (Max Cloud: {MAX_CLOUD}%)")
+    
+    # query to filter by cloud cover
+    query = {"eo:cloud_cover": {"lt": MAX_CLOUD}}
+    
     search = client.search(
-        collections=[collection],
+        collections=[cfg["collection"]],
         intersects=aoi_geojson["features"][0]["geometry"],
         datetime=f"{start}/{end}",
         query=query,
-        limit=PER_DAY_LIMIT,
     )
+    
     items = list(search.items())
-
-    # Fallback: if none found under cloud cap, retry without cloud filter
-    if not items and max_cloud is not None:
-        search = client.search(
-            collections=[collection],
-            intersects=aoi_geojson["features"][0]["geometry"],
-            datetime=f"{start}/{end}",
-            limit=PER_DAY_LIMIT,
-        )
-        items = list(search.items())
-
-    return [pc.sign(it) for it in items]
-
-
-def _stack_single_item(
-    item,
-    aoi_gdf: gpd.GeoDataFrame,
-    epsg: int,
-    bounds: Tuple[float, float, float, float],
-    cfg: dict,
-):
-    assets = [cfg["assets"]["red"], cfg["assets"]["nir"], cfg["assets"]["qa"]]
-    arr = st.stack(
-        [item],
-        assets=assets,
-        epsg=epsg,
-        bounds=bounds,
-        resolution=cfg["resolution"],
-        chunksize=512,
-        dtype="float32",
-        fill_value=FILL_VALUE,  # NaN fill
-        rescale=False,
-    )
-    arr = arr.chunk({"time": 1, "y": 512, "x": 512})
-    if not arr.rio.crs:
-        arr = arr.rio.write_crs(epsg)
-    return arr  # dims: time, band, y, x
-
-
-def _scene_clear_score(item, aoi_gdf: gpd.GeoDataFrame, epsg: int, bounds, cfg: dict) -> Tuple[float, float, float]:
-    """
-    Score a scene by clear fraction over AOI using QA mask.
-    Returns: (score, clear_frac, mean_ndvi)
-    Higher score is better.
-    """
-    arr = _stack_single_item(item, aoi_gdf, epsg, bounds, cfg)
-
-    # Band labels are asset names in stackstac ("B04", "B08", "SCL" ...)
-    red = arr.sel(band=cfg["assets"]["red"]).astype("float32")
-    nir = arr.sel(band=cfg["assets"]["nir"]).astype("float32")
-    qa = arr.sel(band=cfg["assets"]["qa"])
-
-    # Compute NDVI then apply QA mask
-    ndvi = compute_ndvi_mixed(red, nir, cfg)
-    ndvi_m = mask_clouds_mixed(qa, ndvi, cfg)
-
-    # Evaluate AOI clarity (how much survived masking)
-    valid = np.isfinite(ndvi_m)
-    clear_frac = float(valid.mean().compute())
-    mean_ndvi = float(ndvi_m.where(valid).mean().compute())
-
-    # Also include scene-level cloud cover as weak tie-breaker
-    cloud = item.properties.get("eo:cloud_cover", None)
-    try:
-        cloud = float(cloud) if cloud is not None else 100.0
-    except Exception:
-        cloud = 100.0
-
-    # Score: prioritize AOI clarity heavily, then penalize cloud a little
-    score = clear_frac - 0.002 * cloud
-    return score, clear_frac, mean_ndvi
-
-
-def pick_best_scenes_for_year(
-    year: int,
-    aoi_gdf: gpd.GeoDataFrame,
-    aoi_geojson: dict,
-    cfg: dict,
-) -> List:
-    client = Client.open(CATALOG)
-
-    start, end = seasonal_window(year, WINDOW_START_MONTH, WINDOW_START_DAY, WINDOW_WEEKS)
-    epsg = _utm_epsg_for_aoi(aoi_gdf)
-    bounds = _aoi_bounds_in_epsg(aoi_gdf, epsg)
-
-    # Gather candidates day-by-day
-    candidates = []
-    d = start
-    print(f"[{year}] Day-by-day candidate search: {start} → {end} (MAX_CLOUD={MAX_CLOUD})")
-    while d <= end:
-        items = _do_search_day(client, cfg["collection"], aoi_geojson, d, MAX_CLOUD)
-        candidates.extend(items)
-        d += timedelta(days=DAY_STEP)
-
-    if not candidates:
-        return []
-
-    # Deduplicate by id
+    
+    # De-duplicate
     seen = set()
     uniq = []
-    for it in candidates:
+    for it in items:
         if it.id not in seen:
             seen.add(it.id)
             uniq.append(it)
-
-    print(f"[{year}] Candidates: {len(uniq)} (unique)")
-
-    # Score each scene by AOI-clear fraction
-    scored = []
-    for it in tqdm(uniq, desc=f"[{year}] Scoring scenes", leave=False):
-        try:
-            score, clear_frac, mean_ndvi = _scene_clear_score(it, aoi_gdf, epsg, bounds, cfg)
-            scored.append((score, clear_frac, mean_ndvi, it))
-        except Exception as e:
-            # Skip broken scenes rather than killing the whole year
-            print(f"[{year}] Skip {it.id}: scoring failed ({e})")
-
-    if not scored:
-        return []
-
-    scored.sort(key=lambda t: t[0], reverse=True)
-    best = scored[:BEST_K]
-
-    print(f"[{year}] Best {len(best)} scenes (ranked by AOI clarity):")
-    for i, (score, cf, mndvi, it) in enumerate(best, 1):
-        cloud = it.properties.get("eo:cloud_cover", None)
-        dt = getattr(it, "datetime", None)
-        print(f"  {i:02d}. score={score:.3f} clear={cf:.3f} mean_ndvi={mndvi:.3f} cloud={cloud} date={dt} id={it.id}")
-
-    return [t[3] for t in best]
+            
+    # CRITICAL FIX for 2003-2012 "Zebra Stripes": 
+    # If using L57, heavily prefer Landsat 5 (LT05) over Landsat 7 (LE07) due to SLC failure
+    if cfg["collection"] == "landsat-c2-l2" and 2003 <= year <= 2012:
+        l5_items = [it for it in uniq if "LT05" in it.id]
+        if len(l5_items) >= 5: # If we have enough L5 scenes, ditch L7 completely
+            uniq = l5_items
+            print(f"[{year}] Prioritizing Landsat 5 to avoid SLC-off stripes. Dropped Landsat 7.")
+            
+    # Sort by cloud cover to ensure our 'MAX_SCENES_TO_STACK' slice are the best ones
+    uniq.sort(key=lambda x: x.properties.get("eo:cloud_cover", 100))
+    
+    # Cap the stack size so we don't blow out memory
+    final_items = uniq[:MAX_SCENES_TO_STACK]
+    
+    print(f"[{year}] Found {len(uniq)} scenes. Stacking top {len(final_items)}.")
+    return [pc.sign(it) for it in final_items]
 
 
 def build_composite_from_scenes(
@@ -282,94 +171,97 @@ def build_composite_from_scenes(
     aoi_gdf: gpd.GeoDataFrame,
     cfg: dict,
     out_tif: pl.Path,
-    reducer: str,
 ):
     epsg = _utm_epsg_for_aoi(aoi_gdf)
     bounds = _aoi_bounds_in_epsg(aoi_gdf, epsg)
 
     assets = [cfg["assets"]["red"], cfg["assets"]["nir"], cfg["assets"]["qa"]]
+    
+    # Build the deep temporal stack
     stack = st.stack(
         items,
         assets=assets,
         epsg=epsg,
         bounds=bounds,
         resolution=cfg["resolution"],
-        chunksize=768,
+        chunksize=1024, # Larger chunks for efficiency over deep time
         dtype="float32",
-        fill_value=FILL_VALUE,   # NaN fill
+        fill_value=FILL_VALUE,
         rescale=False,
-    ).chunk({"time": 1, "y": 512, "x": 512})
+    )
 
     if not stack.rio.crs:
         stack = stack.rio.write_crs(epsg)
 
+    # Extract bands
     red = stack.sel(band=cfg["assets"]["red"]).astype("float32")
     nir = stack.sel(band=cfg["assets"]["nir"]).astype("float32")
     qa = stack.sel(band=cfg["assets"]["qa"])
 
+    # Compute NDVI for all pixels across all time slices
+    print(f"  -> Computing NDVI and applying masks across {len(items)} scenes...")
     ndvi = compute_ndvi_mixed(red, nir, cfg)
+    
+    # Drop cloudy/bad pixels to NaN
     ndvi_m = mask_clouds_mixed(qa, ndvi, cfg)
 
-    reducer = (reducer or "median").lower()
-    if reducer == "median":
-        comp = ndvi_m.median(dim="time", skipna=True)
-    elif reducer == "max":
-        comp = ndvi_m.max(dim="time", skipna=True)
-    elif reducer == "p95":
-        comp = ndvi_m.quantile(0.95, dim="time", skipna=True).squeeze(drop=True)
-    else:
-        print(f"Unknown REDUCER={reducer}, using median.")
-        comp = ndvi_m.median(dim="time", skipna=True)
-
+    # TRUE MEDIAN COMPOSITE:
+    # Take the median along the time dimension, ignoring the NaNs (clouds)
+    # This automatically "fills the holes" using clear pixels from other scenes
+    print("  -> Executing Median Reducer (this may take a minute)...")
+    comp = ndvi_m.median(dim="time", skipna=True)
+    
+    # Ensure any remaining fully-clouded pixels stay NaN
     comp = comp.where(np.isfinite(comp))
 
-    # Ensure CRS/transform before writing
-    # Use stack’s transform for write (rioxarray needs one)
-    # stackstac keeps georeferencing but this makes it explicit.
+    # Georeference and Save
     comp.rio.write_crs(epsg, inplace=True)
-
-    # Use rasterio to build transform from bounds + shape + resolution
-    # This avoids “wrong transform” drift.
     res = cfg["resolution"]
     minx, miny, maxx, maxy = bounds
-    height, width = int(comp.sizes["y"]), int(comp.sizes["x"])
     transform = rasterio.transform.from_origin(minx, maxy, res, res)
     comp.rio.write_transform(transform, inplace=True)
 
     out_tif.parent.mkdir(parents=True, exist_ok=True)
+    print(f"  -> Saving COG to {out_tif.name}...")
     comp.rio.to_raster(
         out_tif,
         driver="COG",
         compress="DEFLATE",
         dtype="float32",
-        nodata=None,  # keep NaN as nodata behavior
+        nodata=None,
     )
 
 
 def main():
     aoi_gdf, aoi_geojson = load_aoi(AOI_PATH)
 
-    # Choose years. Default to just 2024 unless you change it.
-    years = [int(os.getenv("YEAR", "2024"))]
+    # Loop from 1985 to present (or whatever range you need)
+    # For testing, you might want to change this to: range(2005, 2009) to verify L7 fixes
+    start_year = int(os.getenv("START_YEAR", "1985"))
+    end_year = int(os.getenv("END_YEAR", "2024"))
+    
+    years = range(start_year, end_year + 1)
 
     for y in years:
-        ds_name, cfg = select_dataset(y)
-        print(f"\n[{y}] Dataset: {ds_name} / {cfg['collection']}")
+        try:
+            ds_name, cfg = select_dataset(y)
+            
+            best_items = gather_scenes_for_year(y, aoi_geojson, cfg)
+            
+            if not best_items:
+                print(f"[{y}] No usable scenes found; skipping.")
+                continue
 
-        best_items = pick_best_scenes_for_year(y, aoi_gdf, aoi_geojson, cfg)
-        if not best_items:
-            print(f"[{y}] No usable scenes found; skipping.")
-            continue
+            out_tif = OUTDIR / f"ndvi_median_{y}.tif"
 
-        reducer = os.getenv("REDUCER", "median")
-        out_tif = OUTDIR / f"ndvi_median_{y}.tif"
+            build_composite_from_scenes(best_items, aoi_gdf, cfg, out_tif)
+            
+            print(f"[{y}] Success: {out_tif}\n")
+            
+        except Exception as e:
+            print(f"[{y}] FAILED: {str(e)}\n")
 
-        print(f"[{y}] Building composite from best scenes → {out_tif} (REDUCER={reducer})")
-        build_composite_from_scenes(best_items, aoi_gdf, cfg, out_tif, reducer=reducer)
-
-        print(f"[{y}] Saved: {out_tif}")
-
-    print("Done.")
+    print("Pipeline Complete.")
 
 
 if __name__ == "__main__":
