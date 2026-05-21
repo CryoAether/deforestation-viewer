@@ -1,0 +1,213 @@
+:root {
+  --bg: #0b1020;
+  --panel: rgba(255, 255, 255, 0.92);
+  --panel-border: rgba(0, 0, 0, 0.08);
+  --text: #0f172a;
+  --muted: rgba(15, 23, 42, 0.65);
+  --shadow: 0 10px 30px rgba(0,0,0,0.12);
+  --radius: 16px;
+  --radius-lg: 18px;
+  --accent: #2563eb;
+}
+
+* { box-sizing: border-box; }
+html, body, #root { height: 100%; }
+body {
+  margin: 0;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+  color: var(--text);
+  background: radial-gradient(1200px 900px at 20% 10%, #1b2a6b 0%, #0b1020 55%, #070a14 100%);
+}
+
+.shell {
+  height: 100%;
+  display: grid;
+  grid-template-columns: 380px 1fr;
+  gap: 14px;
+  padding: 14px;
+}
+
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.panelHeader {
+  padding: 18px 18px 10px 18px;
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+
+.titleRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.h1 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: 0.2px;
+}
+
+.badge {
+  font-size: 12px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(37, 99, 235, 0.12);
+  color: rgba(37, 99, 235, 1);
+  border: 1px solid rgba(37, 99, 235, 0.18);
+  white-space: nowrap;
+}
+
+.sub {
+  margin: 8px 0 0 0;
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.panelBody {
+  padding: 16px 18px;
+  overflow: auto;
+}
+
+.section {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(0,0,0,0.06);
+}
+
+.section:first-child {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: none;
+}
+
+.label {
+  font-size: 12px;
+  font-weight: 700;
+  color: rgba(15, 23, 42, 0.85);
+  margin-bottom: 8px;
+  display: block;
+}
+
+.select, .button {
+  width: 100%;
+  border-radius: 12px;
+  border: 1px solid rgba(0,0,0,0.10);
+  padding: 10px 12px;
+  font-size: 14px;
+  background: white;
+  outline: none;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.toggleRow {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  font-size: 13px;
+  color: rgba(15, 23, 42, 0.85);
+}
+
+.small {
+  margin-top: 10px;
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.button {
+  cursor: pointer;
+  background: rgba(37, 99, 235, 1);
+  color: white;
+  border: 1px solid rgba(37, 99, 235, 0.9);
+  font-weight: 700;
+}
+
+.buttonSecondary {
+  cursor: pointer;
+  background: white;
+  color: rgba(15, 23, 42, 0.9);
+  border: 1px solid rgba(0,0,0,0.12);
+  font-weight: 700;
+}
+
+.buttonRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.errorBox {
+  margin-top: 12px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  background: rgba(239, 68, 68, 0.08);
+  color: rgba(127, 29, 29, 1);
+  font-size: 12px;
+  white-space: pre-wrap;
+}
+
+.mapWrap {
+  position: relative;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.10);
+}
+
+.mapHud {
+  position: absolute;
+  z-index: 600; /* above leaflet tiles */
+  right: 14px;
+  top: 14px;
+  width: 220px;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(0,0,0,0.10);
+  border-radius: 14px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.10);
+  padding: 12px;
+  backdrop-filter: blur(8px);
+}
+
+.legendTitle {
+  font-size: 12px;
+  font-weight: 800;
+  margin: 0 0 10px 0;
+}
+
+.legendBar {
+  height: 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(0,0,0,0.12);
+  overflow: hidden;
+}
+
+.legendTicks {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: rgba(15, 23, 42, 0.75);
+  margin-top: 6px;
+}
+
+.legendHint {
+  margin-top: 8px;
+  font-size: 11px;
+  color: rgba(15, 23, 42, 0.62);
+  line-height: 1.4;
+}

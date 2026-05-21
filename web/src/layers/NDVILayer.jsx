@@ -1,7 +1,7 @@
 import React from "react";
 import { TileLayer } from "react-leaflet";
 
-export default function NDVILayer({ year, opacity = 0.9 }) {
+export default function NDVILayer({ year, opacity = 0.9, bounds = null }) {
   const url = `/tiles/ndvi/${year}/{z}/{x}/{y}.png`;
-  return <TileLayer url={url} opacity={opacity} noWrap />;
+  return <TileLayer url={url} opacity={opacity} noWrap bounds={bounds ?? undefined} />;
 }

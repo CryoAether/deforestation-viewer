@@ -60,7 +60,8 @@ def ndvi_tile(year: int, z: int, x: int, y: int):
         # Keep errors visible but not a cryptic 500
         raise HTTPException(status_code=500, detail=f"Tile read failed: {e}")
 
-    png = render_png_singleband(band, vmin=0.0, vmax=1.0, cmap_name="RdYlGn", nodata=NODATA)
+    vmin, vmax = robust_range(str(path), default=(0.2, 0.85))
+    png = render_png_singleband(band, vmin=vmin, vmax=vmax, cmap_name="RdYlGn", nodata=NODATA)
     return Response(content=png, media_type="image/png", headers={"Cache-Control": "public, max-age=3600"})
 
 
