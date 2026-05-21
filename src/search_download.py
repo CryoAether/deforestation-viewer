@@ -181,9 +181,9 @@ def build_composite_from_scenes(
         stack = stack.rio.write_crs(epsg)
 
     # 1. Select the bands
-    red = stack.sel(band=cfg["assets"]["red"])
-    nir = stack.sel(band=cfg["assets"]["nir"])
-    qa = stack.sel(band=cfg["assets"]["qa"])
+    red = stack.sel(band=cfg["assets"]["red"]).reset_coords(drop=True)
+    nir = stack.sel(band=cfg["assets"]["nir"]).reset_coords(drop=True)
+    qa = stack.sel(band=cfg["assets"]["qa"]).reset_coords(drop=True)
 
     # 2. FIX: Force-drop all string/metadata coordinates that stackstac attaches.
     # This prevents Xarray from accidentally trying to cast strings into floats.

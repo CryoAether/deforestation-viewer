@@ -18,25 +18,28 @@ _LANDSAT_BAD = (
     (1 << 3) |  # cloud
     (1 << 4) |  # cloud shadow
     (1 << 5)    # snow
-    | ((1 << 7) if EXCLUDE_LANDSAT_WATER else 0)  # water (optional)
+    | ((1 << 7) if EXCLUDE_LANDSAT_WATER else 0)
 )
 
 def compute_ndvi_mixed(red, nir, cfg):
     """Compute NDVI using dataset-specific reflectance scale/offset."""
     scale = float(cfg["scale"])
     offset = float(cfg["offset"])
+    
     redf = red * scale + offset
     nirf = nir * scale + offset
+    
     ndvi = (nirf - redf) / (nirf + redf + 1e-6)
-    return ndvi.astype("float32")
+    
+    return ndvi
 
 def mask_clouds_mixed(qa, arr, cfg):
     """Mask clouds/snow/shadow/water using dataset-appropriate QA."""
     if cfg["mask"] == "s2":
-        qa_i = qa.where(np.isfinite(qa)).fillna(0).round().astype("uint8")
-        bad = np.isin(qa_i, SCL_BAD)
-        return arr.where(~bad)
+        qa_clean = qa.where(np.isfinite(qa), 0).round()
+        bad_mask = np.isin(qa_clean.data, SCL_BAD)
+        return arr.where(~bad_mask)
     else:
-        qa_u = qa.where(np.isfinite(qa)).fillna(0).astype("uint16")
-        bad = (qa_u & _LANDSAT_BAD) != 0
-        return arr.where(~bad)
+        qa_clean = qa.where(np.isfinite(qa), 0)
+        bad_mask = (qa_clean.data.astype("uint16") & _LANDSAT_BAD) != 0
+        return arr.where(~bad_mask)
