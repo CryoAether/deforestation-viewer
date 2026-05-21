@@ -27,16 +27,12 @@ from ndvi import compute_ndvi_mixed, mask_clouds_mixed
 # =========================
 CATALOG = "https://planetarycomputer.microsoft.com/api/stac/v1"
 
-# Expand window to catch the full dry season (June -> Sept/Oct)
 WINDOW_WEEKS = int(os.getenv("WINDOW_WEEKS", "16"))
 WINDOW_START_MONTH = int(os.getenv("WINDOW_START_MONTH", "6"))
 WINDOW_START_DAY = int(os.getenv("WINDOW_START_DAY", "1"))
 
-# BUMP TO 100: We want ALL passes. A scene might be 95% cloudy overall, 
-# but perfectly clear over your specific AOI. Let our mask do the work!
 MAX_CLOUD = int(os.getenv("MAX_CLOUD", "100"))
 
-# Cap the max number of scenes to stack to avoid blowing up memory
 MAX_SCENES_TO_STACK = int(os.getenv("MAX_SCENES_TO_STACK", "40"))
 
 OUTDIR = pl.Path(os.getenv("OUTDIR", "data/composites"))
@@ -177,16 +173,24 @@ def build_composite_from_scenes(
         resolution=cfg["resolution"],
         chunksize=1024, 
         dtype="float32",
-        fill_value=np.float32("nan"), # FIX: Explicitly cast NaN to 32-bit float
+        fill_value=np.float32("nan"), 
         rescale=False,
     )
 
     if not stack.rio.crs:
         stack = stack.rio.write_crs(epsg)
 
-    red = stack.sel(band=cfg["assets"]["red"]).astype("float32")
-    nir = stack.sel(band=cfg["assets"]["nir"]).astype("float32")
+    # 1. Select the bands
+    red = stack.sel(band=cfg["assets"]["red"])
+    nir = stack.sel(band=cfg["assets"]["nir"])
     qa = stack.sel(band=cfg["assets"]["qa"])
+
+    # 2. FIX: Force-drop all string/metadata coordinates that stackstac attaches.
+    # This prevents Xarray from accidentally trying to cast strings into floats.
+    keep_coords = ["time", "y", "x", "spatial_ref"]
+    red = red.drop_vars([c for c in red.coords if c not in keep_coords])
+    nir = nir.drop_vars([c for c in nir.coords if c not in keep_coords])
+    qa = qa.drop_vars([c for c in qa.coords if c not in keep_coords])
 
     print(f"  -> Computing NDVI and applying masks across {len(items)} scenes...")
     ndvi = compute_ndvi_mixed(red, nir, cfg)
