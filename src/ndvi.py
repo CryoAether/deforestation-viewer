@@ -1,5 +1,6 @@
 # src/ndvi.py
 import numpy as np
+import xarray as xr
 
 EXCLUDE_WATER = True
 
@@ -35,11 +36,31 @@ def compute_ndvi_mixed(red, nir, cfg):
 
 def mask_clouds_mixed(qa, arr, cfg):
     """Mask clouds/snow/shadow/water using dataset-appropriate QA."""
+    
+
+    valid = qa.notnull()
+    
     if cfg["mask"] == "s2":
-        qa_clean = qa.where(np.isfinite(qa), 0).round()
-        bad_mask = np.isin(qa_clean.data, SCL_BAD)
-        return arr.where(~bad_mask)
+        qa_safe = qa.fillna(0).round()
+        
+        bad_mask = xr.apply_ufunc(
+            np.isin,
+            qa_safe,
+            SCL_BAD,
+            dask="allowed"
+        )
+        return arr.where(valid & ~bad_mask)
+        
     else:
-        qa_clean = qa.where(np.isfinite(qa), 0)
-        bad_mask = (qa_clean.data.astype("uint16") & _LANDSAT_BAD) != 0
-        return arr.where(~bad_mask)
+        qa_safe = qa.fillna(0)
+        
+        def bitwise_check(x):
+            return (x.astype(np.uint16) & _LANDSAT_BAD) != 0
+
+        bad_mask = xr.apply_ufunc(
+            bitwise_check,
+            qa_safe,
+            dask="allowed"
+        )
+        
+        return arr.where(valid & ~bad_mask)

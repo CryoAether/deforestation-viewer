@@ -122,7 +122,7 @@ export default function App() {
             <span className="badge">{modeLabel}</span>
           </div>
           <p className="sub">
-            Interactive NDVI composites and ΔNDVI change tiles served by FastAPI. Basemap: Esri World Imagery.
+            Interactive NDVI composites tiles served by FastAPI. Basemap: Esri World Imagery.
           </p>
 
           {error && <div className="errorBox">{error}</div>}
@@ -153,7 +153,7 @@ export default function App() {
               </select>
 
               <div className="small">
-                Tip: median seasonal composite is usually smoother than max for cloud edge artifacts.
+                View year from 2016-2025
               </div>
             </div>
           )}
@@ -225,9 +225,7 @@ export default function App() {
               </button>
             </div>
 
-            <div className="small">
-              In dev: React proxies <code>/api</code> and <code>/tiles</code> to FastAPI.
-            </div>
+
           </div>
         </div>
       </div>

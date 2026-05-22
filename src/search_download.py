@@ -28,17 +28,17 @@ from ndvi import compute_ndvi_mixed, mask_clouds_mixed
 CATALOG = "https://planetarycomputer.microsoft.com/api/stac/v1"
 
 WINDOW_WEEKS = int(os.getenv("WINDOW_WEEKS", "16"))
-WINDOW_START_MONTH = int(os.getenv("WINDOW_START_MONTH", "6"))
+WINDOW_START_MONTH = int(os.getenv("WINDOW_START_MONTH", "8"))
 WINDOW_START_DAY = int(os.getenv("WINDOW_START_DAY", "1"))
 
 MAX_CLOUD = int(os.getenv("MAX_CLOUD", "100"))
 
-MAX_SCENES_TO_STACK = int(os.getenv("MAX_SCENES_TO_STACK", "40"))
+MAX_SCENES_TO_STACK = int(os.getenv("MAX_SCENES_TO_STACK", "70"))
 
 OUTDIR = pl.Path(os.getenv("OUTDIR", "data/composites"))
 OUTDIR.mkdir(parents=True, exist_ok=True)
 
-AOI_PATH = os.getenv("AOI_PATH", "data/aoi/roi.geojson")
+AOI_PATH = os.getenv("AOI_PATH", "data/aoi/roi_barren.geojson")
 
 # Dask optimization for deep temporal stacks
 dask.config.set(scheduler="threads", num_workers=int(os.getenv("DASK_WORKERS", "4")))
@@ -181,9 +181,9 @@ def build_composite_from_scenes(
         stack = stack.rio.write_crs(epsg)
 
     # 1. Select the bands
-    red = stack.sel(band=cfg["assets"]["red"]).reset_coords(drop=True)
-    nir = stack.sel(band=cfg["assets"]["nir"]).reset_coords(drop=True)
-    qa = stack.sel(band=cfg["assets"]["qa"]).reset_coords(drop=True)
+    red = stack.sel(band=cfg["assets"]["red"])
+    nir = stack.sel(band=cfg["assets"]["nir"])
+    qa = stack.sel(band=cfg["assets"]["qa"])
 
     # 2. FIX: Force-drop all string/metadata coordinates that stackstac attaches.
     # This prevents Xarray from accidentally trying to cast strings into floats.
@@ -222,7 +222,7 @@ def build_composite_from_scenes(
 def main():
     aoi_gdf, aoi_geojson = load_aoi(AOI_PATH)
 
-    start_year = int(os.getenv("START_YEAR", "1985"))
+    start_year = int(os.getenv("START_YEAR", "2024"))
     end_year = int(os.getenv("END_YEAR", "2024"))
     
     years = range(start_year, end_year + 1)

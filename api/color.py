@@ -1,3 +1,4 @@
+# api/color.py
 from __future__ import annotations
 
 from io import BytesIO
@@ -5,7 +6,7 @@ from io import BytesIO
 import numpy as np
 
 import matplotlib
-matplotlib.use("Agg")  # server-safe
+matplotlib.use("Agg")
 import matplotlib.cm as cm
 from PIL import Image
 
@@ -17,16 +18,10 @@ def render_png_singleband(
     cmap_name: str,
     nodata: float | None = None,
 ) -> bytes:
-    """Render a single-band tile to RGBA PNG bytes.
-
-    - NaN and nodata -> transparent
-    - values outside [vmin, vmax] -> clipped
-    """
+    """Render a single-band tile to RGBA PNG bytes."""
     arr = band.astype("float32", copy=False)
 
     mask = ~np.isfinite(arr)
-    if nodata is not None:
-        mask |= (arr == nodata)
 
     # guard invalid ranges
     if not np.isfinite(vmin):
@@ -42,9 +37,10 @@ def render_png_singleband(
     # ensure masked pixels don't get a color after clipping
     norm = np.where(mask, 0.0, norm)
 
-    # fixed-size LUT for speed
     cmap = cm.get_cmap(cmap_name, 256)
     rgba = (cmap(norm) * 255.0).astype("uint8")  # H,W,4
+    
+    # Apply full transparency to the mask
     rgba[mask] = (0, 0, 0, 0)
 
     img = Image.fromarray(rgba, mode="RGBA")

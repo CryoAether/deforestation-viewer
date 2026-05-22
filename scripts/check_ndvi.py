@@ -2,12 +2,11 @@ import numpy as np
 import rioxarray as rxr
 import matplotlib.pyplot as plt
 
-p = "data/composites/ndvi_median_2024.tif"  # change year if needed
+p = "data/composites/mid-year-2024.tif"
 
 da = rxr.open_rasterio(p, masked=True).squeeze()
 v = da.values.astype("float32")
 
-# Mask to plausible NDVI range
 mask = np.isfinite(v) & (v > -1.0) & (v < 1.0)
 
 print("file:", p)
