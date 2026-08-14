@@ -4,10 +4,11 @@ import os
 from database.connection import engine, Base, AsyncSessionLocal
 from database.models import RegionOfInterest
 from geoalchemy2.shape import from_shape
-from shapely.geometry import shape
+from shapely.geometry import shape, MultiPolygon, Polygon
 
 async def init_db():
     async with engine.begin() as conn:
+        # Recreate tables to reflect updated geometry column type
         await conn.run_sync(Base.metadata.create_all)
 
 async def seed_aoi(geojson_path: str = "data/aoi/roi.geojson"):
@@ -21,6 +22,10 @@ async def seed_aoi(geojson_path: str = "data/aoi/roi.geojson"):
 
     feature = data["features"][0] if "features" in data else data
     geom_shape = shape(feature["geometry"])
+
+    # Ensure shape is a MultiPolygon
+    if isinstance(geom_shape, Polygon):
+        geom_shape = MultiPolygon([geom_shape])
 
     async with AsyncSessionLocal() as session:
         roi = RegionOfInterest(

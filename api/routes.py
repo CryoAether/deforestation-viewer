@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import List
 import json
+
 from fastapi import APIRouter, HTTPException, Depends
 from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -12,11 +13,12 @@ from pyproj import Transformer
 
 from database.connection import get_db
 from database.models import RegionOfInterest
-from api.config import COMP_DIR
-from api.delta import ensure_delta, ndvi_path
-from api.raster import robust_range
+from .config import COMP_DIR
+from .delta import ensure_delta, ndvi_path
+from .raster import robust_range
 
 router = APIRouter(prefix="/api")
+
 
 def bounds_wgs84(path: str):
     with rasterio.open(path) as ds:
@@ -29,9 +31,10 @@ def bounds_wgs84(path: str):
 
     return {
         "bbox": [west, south, east, north],
-        "bounds": [[south, west], [north, east]],
+        "bounds": [[south, west], [north, east]],  # Leaflet format
         "center": [(south + north) / 2, (west + east) / 2],
     }
+
 
 def _years() -> List[int]:
     years: List[int] = []
@@ -42,32 +45,44 @@ def _years() -> List[int]:
             pass
     return sorted(set(years))
 
+
 @router.get("/health")
 async def health():
     return {"ok": True}
 
+
 @router.get("/aoi")
 async def get_aoi_from_db(db: AsyncSession = Depends(get_db)):
     """Dynamically query PostGIS spatial geometries directly from PostgreSQL."""
-    query = select(
-        RegionOfInterest.id,
-        RegionOfInterest.name,
-        RegionOfInterest.description,
-        func.ST_AsGeoJSON(RegionOfInterest.geom).label("geojson")
-    )
-    result = await db.execute(query)
-    rows = result.all()
-    
-    features = []
-    for row in rows:
-        features.append({
-            "type": "Feature",
-            "id": row.id,
-            "properties": {"name": row.name, "description": row.description},
-            "geometry": json.loads(row.geojson)
-        })
-        
-    return {"type": "FeatureCollection", "features": features}
+    try:
+        query = select(
+            RegionOfInterest.id,
+            RegionOfInterest.name,
+            RegionOfInterest.description,
+            func.ST_AsGeoJSON(RegionOfInterest.geom).label("geojson")
+        )
+        result = await db.execute(query)
+        rows = result.all()
+
+        features = []
+        for row in rows:
+            features.append({
+                "type": "Feature",
+                "id": row.id,
+                "properties": {
+                    "name": row.name,
+                    "description": row.description
+                },
+                "geometry": json.loads(row.geojson)
+            })
+
+        return {
+            "type": "FeatureCollection",
+            "features": features
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Database query failed: {str(e)}")
+
 
 @router.get("/bounds/{year}")
 async def get_bounds(year: int):
@@ -77,6 +92,7 @@ async def get_bounds(year: int):
         raise HTTPException(status_code=404, detail=str(e))
     return bounds_wgs84(str(p))
 
+
 @router.get("/years")
 async def years():
     ys = _years()
@@ -84,9 +100,11 @@ async def years():
         raise HTTPException(status_code=404, detail=f"No composites found in {COMP_DIR}")
     return {"years": ys}
 
+
 class DeltaReq(BaseModel):
     from_year: int
     to_year: int
+
 
 @router.post("/delta")
 async def build_delta(req: DeltaReq):

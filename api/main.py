@@ -2,9 +2,10 @@ from __future__ import annotations
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from database.connection import engine, Base
+
 from api.routes import router as api_router
 from api.tiles import router as tiles_router
+from database.connection import Base, engine
 
 app = FastAPI(title="Deforestation & Remote Sensing API", version="2.0.0")
 

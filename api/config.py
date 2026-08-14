@@ -1,6 +1,7 @@
 from __future__ import annotations
-import pathlib as pl
+
 import os
+import pathlib as pl
 
 BASE_DIR = pl.Path(__file__).resolve().parents[1]
 DATA_DIR = BASE_DIR / "data"

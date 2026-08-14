@@ -1,6 +1,6 @@
+import matplotlib.pyplot as plt
 import numpy as np
 import rioxarray as rxr
-import matplotlib.pyplot as plt
 
 p = "data/composites/mid-year-2024.tif"
 
