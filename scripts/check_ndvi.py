@@ -35,3 +35,4 @@ if mask.any():
     plt.show()
 else:
     print("No valid NDVI pixels found.")
+    print('Lachy is interesting')
