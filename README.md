@@ -1,7 +1,26 @@
 # Deforestation Viewer: NDVI Change Detection (1985–2024)
 
 A lightweight satellite analysis pipeline for monitoring vegetation change using **Landsat (5/7/8/9)** and **Sentinel-2** imagery through the **Microsoft Planetary Computer API**.  
-The system computes yearly **NDVI (Normalized Difference Vegetation Index)** composites and visualizes deforestation trends in an interactive Streamlit map.
+The system computes yearly **NDVI (Normalized Difference Vegetation Index)** composites and visualizes deforestation trends in an interactive map.
+
+## Example Output
+
+| Year | Observation |
+|------|--------------|
+| **2016** | Dense vegetation with minimal disturbance |
+| **2020** | Minor visible deforestation damage |
+| **2025** | Major shift in NDVI attributed to large drought |
+
+<p align="center">
+  <img src="assets/readme/1995.png" width="31%" alt="NDVI 1995">
+  <img src="assets/readme/2002.png" width="31%" alt="NDVI 2002">
+  <img src="assets/readme/2021.png" width="31%" alt="NDVI 2021">
+</p>
+<p align="center">
+  <em>NDVI change progression — 1995 → 2002 → 2021</em>
+</p>
+
+---
 
 ---
 
@@ -24,26 +43,6 @@ The system computes yearly **NDVI (Normalized Difference Vegetation Index)** com
 **Data Source:** Microsoft Planetary Computer STAC API
 
 ---
-
-## Example Output
-
-| Year | Observation |
-|------|--------------|
-| **1995** | Dense vegetation with minimal disturbance |
-| **2002** | Visible clearing in northern region |
-| **2021** | Significant NDVI decline due to deforestation |
-
-<p align="center">
-  <img src="assets/readme/1995.png" width="31%" alt="NDVI 1995">
-  <img src="assets/readme/2002.png" width="31%" alt="NDVI 2002">
-  <img src="assets/readme/2021.png" width="31%" alt="NDVI 2021">
-</p>
-<p align="center">
-  <em>NDVI change progression — 1995 → 2002 → 2021</em>
-</p>
-
----
-
 
 
 
