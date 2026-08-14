@@ -1,48 +1,40 @@
-# Deforestation Viewer: NDVI Change Detection
+# Spatiotemporal Satellite Data Engine & Change Viewer
 
-A lightweight satellite analysis pipeline for monitoring vegetation change.
+A high-throughput satellite data pipeline and interactive visualization dashboard for multi-decadal environmental trend modeling.
 
 ## Example Output
 
-| Year | Observation |
-|------|--------------|
-| **2016** | Dense vegetation with minimal disturbance |
-| **2024** | Minor visible deforestation damage |
-| **2025** | Major shift in NDVI attributed to large drought |
+| Observation Window | Index Analysis | Trend Observation |
+|---|---|---|
+| **2016** | Baseline Composite | High-density vegetation / surface water extent |
+| **2024** | Intermediate Shift | Minor visible index deviation |
+| **2025** | Recent Composite | Significant delta ($\Delta$) attributed to environmental trend |
 
 <p align="center">
-  <img src="assets/readme/2016.png" width="31%" alt="NDVI 1995">
-  <img src="assets/readme/2024.png" width="31%" alt="NDVI 2002">
-  <img src="assets/readme/2025.png" width="31%" alt="NDVI 2021">
+  <img src="assets/readme/2016.png" width="31%" alt="Composite 2016">
+  <img src="assets/readme/2024.png" width="31%" alt="Composite 2024">
+  <img src="assets/readme/2025.png" width="31%" alt="Composite 2025">
 </p>
 <p align="center">
-  <em>NDVI change progression — 2016 → 2024 → 2025</em>
+  <em>Temporal index progression — 2016 → 2024 → 2025</em>
 </p>
 
 ---
 
 ## Features
 
-- Processes Landsat 5–9 and Sentinel-2 scenes from 1985–2024  
-- Computes NDVI using dataset-specific scale and offset values  
-- Masks clouds, water, snow, and shadows using QA and SCL bands  
-- Outputs Cloud-Optimized GeoTIFF (COG) composites per year  
-- Visualizes NDVI and ΔNDVI (change) in a FastAPI + React Dashboard
-- Streams imagery efficiently via the Planetary Computer — minimal local storage required  
+- **Distributed Data Pipeline:** Executes parallel temporal matrix reductions across multi-gigabyte satellite array datasets (Landsat 5–9, Sentinel-2).
+- **Lazy Cloud Streaming:** Ingests STAC data cubes dynamically via the Microsoft Planetary Computer API to eliminate heavy local storage requirements.
+- **Automated QA Masking:** Applies dataset-specific scale/offset transformations while masking cloud, water, snow, and shadow artifacts using QA/SCL bands.
+- **Optimized Storage & Spatial Indexing:** Stores processed spatial points and metadata in PostgreSQL with spatial indexing and partitioning for accelerated trend query performance.
+- **Interactive Web Dashboard:** Asynchronous FastAPI backend paired with a React/TypeScript interface to dynamically query database layers and render real-time visual analytics.
 
 ---
 
 ## Tech Stack
 
-**Language:** Python  
-**Core Libraries:** Dask, StackSTAC, Xarray, RioXarray, Rasterio, GeoPandas, NumPy  
-**Visualization:** FastAPI, React, Leafmap, Matplotlib  
-**Data Source:** Microsoft Planetary Computer STAC API
-
----
-
-
-
-
-
-
+**Languages:** Python, TypeScript  
+**Core Pipeline:** Dask, StackSTAC, Xarray, RioXarray, Rasterio, GeoPandas, NumPy  
+**Database:** PostgreSQL (PostGIS)  
+**Backend & Frontend:** FastAPI, React / Next.js, Leafmap, Matplotlib  
+**Data Sources:** Microsoft Planetary Computer STAC API
