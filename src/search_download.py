@@ -185,8 +185,6 @@ def build_composite_from_scenes(
     nir = stack.sel(band=cfg["assets"]["nir"])
     qa = stack.sel(band=cfg["assets"]["qa"])
 
-    # 2. FIX: Force-drop all string/metadata coordinates that stackstac attaches.
-    # This prevents Xarray from accidentally trying to cast strings into floats.
     keep_coords = ["time", "y", "x", "spatial_ref"]
     red = red.drop_vars([c for c in red.coords if c not in keep_coords])
     nir = nir.drop_vars([c for c in nir.coords if c not in keep_coords])
