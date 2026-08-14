@@ -1,7 +1,6 @@
-# Deforestation Viewer: NDVI Change Detection (1985–2024)
+# Deforestation Viewer: NDVI Change Detection
 
-A lightweight satellite analysis pipeline for monitoring vegetation change using **Landsat (5/7/8/9)** and **Sentinel-2** imagery through the **Microsoft Planetary Computer API**.  
-The system computes yearly **NDVI (Normalized Difference Vegetation Index)** composites and visualizes deforestation trends in an interactive map.
+A lightweight satellite analysis pipeline for monitoring vegetation change.
 
 ## Example Output
 
@@ -17,20 +16,18 @@ The system computes yearly **NDVI (Normalized Difference Vegetation Index)** com
   <img src="assets/readme/2025.png" width="31%" alt="NDVI 2021">
 </p>
 <p align="center">
-  <em>NDVI change progression — 1995 → 2002 → 2021</em>
+  <em>NDVI change progression — 2016 → 2024 → 2025</em>
 </p>
-
----
 
 ---
 
 ## Features
 
-- Processes **Landsat 5–9** and **Sentinel-2** scenes from 1985–2024  
+- Processes Landsat 5–9 and Sentinel-2 scenes from 1985–2024  
 - Computes NDVI using dataset-specific scale and offset values  
 - Masks clouds, water, snow, and shadows using QA and SCL bands  
-- Outputs **Cloud-Optimized GeoTIFF (COG)** composites per year  
-- Visualizes NDVI and ΔNDVI (change) in a **FastAPI + React Dashboard**  
+- Outputs Cloud-Optimized GeoTIFF (COG) composites per year  
+- Visualizes NDVI and ΔNDVI (change) in a FastAPI + React Dashboard
 - Streams imagery efficiently via the Planetary Computer — minimal local storage required  
 
 ---
