@@ -5,10 +5,10 @@ A high-throughput satellite data pipeline and interactive visualization dashboar
 ## Example Output
 
 | Observation Window | Trend Observation |
-|---|---|---|
+|---|---|
 | **2016** | High-density vegetation |
 | **2024** | Minor visible index deviation |
-| **2025** | Significant delta ($\Delta$) attributed to environmental trend |
+| **2025** | Significant delta (Δ) attributed to environmental trend |
 
 <p align="center">
   <img src="assets/readme/2016.png" width="31%" alt="Composite 2016">
