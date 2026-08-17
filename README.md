@@ -6,9 +6,9 @@ A high-throughput satellite data pipeline and interactive visualization dashboar
 
 | Observation Window | Index Analysis | Trend Observation |
 |---|---|---|
-| **2016** | Baseline Composite | High-density vegetation / surface water extent |
-| **2024** | Intermediate Shift | Minor visible index deviation |
-| **2025** | Recent Composite | Significant delta ($\Delta$) attributed to environmental trend |
+| **2016** | High-density vegetation |
+| **2024** | Minor visible index deviation |
+| **2025** | Significant delta ($\Delta$) attributed to environmental trend |
 
 <p align="center">
   <img src="assets/readme/2016.png" width="31%" alt="Composite 2016">
