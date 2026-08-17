@@ -4,7 +4,7 @@ A high-throughput satellite data pipeline and interactive visualization dashboar
 
 ## Example Output
 
-| Observation Window | Index Analysis | Trend Observation |
+| Observation Window | Trend Observation |
 |---|---|---|
 | **2016** | High-density vegetation |
 | **2024** | Minor visible index deviation |
