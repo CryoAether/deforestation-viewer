@@ -59,12 +59,8 @@ data/raw/
 data/interim/
 
 # Ignore all composites by default...
-data/composites/*
-# ...but keep a marker and a few small examples
+data/*
 !data/composites/.gitkeep
-!data/composites/ndvi_median_1995.tif
-!data/composites/ndvi_median_2002.tif
-!data/composites/ndvi_median_2021.tif
 
 # Delta rasters are generated/cached
 data/change/
