@@ -5,6 +5,7 @@ from datetime import date, timedelta
 import json
 import os
 import pathlib as pl
+import sys
 from typing import Dict, List, Tuple
 
 import numpy as np
@@ -16,10 +17,14 @@ from pystac_client import Client
 import planetary_computer as pc
 import stackstac as st
 
-import dask
-from dask.diagnostics import ProgressBar
-
-from ndvi import compute_ndvi_mixed, mask_clouds_mixed
+# Handle imports when executing either as module or standalone script
+try:
+    from src.dask_engine import init_dask_cluster
+    from src.ndvi import compute_ndvi_mixed, mask_clouds_mixed
+except ImportError:
+    sys.path.append(str(pl.Path(__file__).resolve().parent))
+    from dask_engine import init_dask_cluster
+    from ndvi import compute_ndvi_mixed, mask_clouds_mixed
 
 
 # =========================
@@ -32,7 +37,6 @@ WINDOW_START_MONTH = int(os.getenv("WINDOW_START_MONTH", "8"))
 WINDOW_START_DAY = int(os.getenv("WINDOW_START_DAY", "1"))
 
 MAX_CLOUD = int(os.getenv("MAX_CLOUD", "100"))
-
 MAX_SCENES_TO_STACK = int(os.getenv("MAX_SCENES_TO_STACK", "70"))
 
 OUTDIR = pl.Path(os.getenv("OUTDIR", "data/composites"))
@@ -40,14 +44,14 @@ OUTDIR.mkdir(parents=True, exist_ok=True)
 
 AOI_PATH = os.getenv("AOI_PATH", "data/aoi/roi_barren.geojson")
 
-# Dask optimization for deep temporal stacks
-dask.config.set(scheduler="threads", num_workers=int(os.getenv("DASK_WORKERS", "4")))
-ProgressBar().register()
+DASK_WORKERS = int(os.getenv("DASK_WORKERS", "4"))
+DASK_THREADS = int(os.getenv("DASK_THREADS", "2"))
 
 
 # =========================
 # Dataset registry
 # =========================
+# Uses Planetary Computer canonical STAC asset keys
 DATASETS: Dict[str, dict] = {
     "S2": {
         "years": (2016, 2100),
@@ -59,9 +63,9 @@ DATASETS: Dict[str, dict] = {
         "resolution": 10,
     },
     "L89": {
-        "years": (2013, 2100),
+        "years": (2013, 2015),
         "collection": "landsat-c2-l2",
-        "assets": {"red": "SR_B4", "nir": "SR_B5", "qa": "QA_PIXEL"},
+        "assets": {"red": "red", "nir": "nir08", "qa": "qa_pixel"},
         "mask": "landsat",
         "scale": 2.75e-05,
         "offset": -0.2,
@@ -70,7 +74,7 @@ DATASETS: Dict[str, dict] = {
     "L57": {
         "years": (1985, 2012),
         "collection": "landsat-c2-l2",
-        "assets": {"red": "SR_B3", "nir": "SR_B4", "qa": "QA_PIXEL"},
+        "assets": {"red": "red", "nir": "nir08", "qa": "qa_pixel"},
         "mask": "landsat",
         "scale": 2.75e-05,
         "offset": -0.2,
@@ -120,7 +124,6 @@ def gather_scenes_for_year(
     
     print(f"[{year}] Searching {cfg['collection']} from {start} to {end} (Max Cloud: {MAX_CLOUD}%)")
     
-    # Only append the cloud query if we actually want to limit it
     query = {"eo:cloud_cover": {"lt": MAX_CLOUD}} if MAX_CLOUD < 100 else None
     
     search = client.search(
@@ -132,7 +135,7 @@ def gather_scenes_for_year(
     
     items = list(search.items())
     
-    # De-duplicate
+    # De-duplicate items
     seen = set()
     uniq = []
     for it in items:
@@ -140,7 +143,7 @@ def gather_scenes_for_year(
             seen.add(it.id)
             uniq.append(it)
             
-    # CRITICAL FIX for 2003-2012 "Zebra Stripes": 
+    # Landsat 7 SLC-off striping mitigation
     if cfg["collection"] == "landsat-c2-l2" and 2003 <= year <= 2012:
         l5_items = [it for it in uniq if "LT05" in it.id]
         if len(l5_items) >= 5: 
@@ -163,8 +166,12 @@ def build_composite_from_scenes(
     epsg = _utm_epsg_for_aoi(aoi_gdf)
     bounds = _aoi_bounds_in_epsg(aoi_gdf, epsg)
 
-    assets = [cfg["assets"]["red"], cfg["assets"]["nir"], cfg["assets"]["qa"]]
+    red_asset = cfg["assets"]["red"]
+    nir_asset = cfg["assets"]["nir"]
+    qa_asset = cfg["assets"]["qa"]
+    assets = [red_asset, nir_asset, qa_asset]
     
+    # Construct lazy 4D Dask array stack
     stack = st.stack(
         items,
         assets=assets,
@@ -180,25 +187,27 @@ def build_composite_from_scenes(
     if not stack.rio.crs:
         stack = stack.rio.write_crs(epsg)
 
-    # 1. Select the bands
-    red = stack.sel(band=cfg["assets"]["red"])
-    nir = stack.sel(band=cfg["assets"]["nir"])
-    qa = stack.sel(band=cfg["assets"]["qa"])
+    # 1. Select the spectral bands
+    red = stack.sel(band=red_asset)
+    nir = stack.sel(band=nir_asset)
+    qa = stack.sel(band=qa_asset)
 
+    # Strip metadata string coordinates that cause arithmetic conversion errors
     keep_coords = ["time", "y", "x", "spatial_ref"]
-    red = red.drop_vars([c for c in red.coords if c not in keep_coords])
-    nir = nir.drop_vars([c for c in nir.coords if c not in keep_coords])
-    qa = qa.drop_vars([c for c in qa.coords if c not in keep_coords])
+    red = red.drop_vars([c for c in red.coords if c not in keep_coords], errors="ignore").astype("float32")
+    nir = nir.drop_vars([c for c in nir.coords if c not in keep_coords], errors="ignore").astype("float32")
+    qa = qa.drop_vars([c for c in qa.coords if c not in keep_coords], errors="ignore")
 
-    print(f"  -> Computing NDVI and applying masks across {len(items)} scenes...")
+    print(f"  -> Building Dask task graph for NDVI & QA masking across {len(items)} scenes...")
     ndvi = compute_ndvi_mixed(red, nir, cfg)
-    
     ndvi_m = mask_clouds_mixed(qa, ndvi, cfg)
 
-    print("  -> Executing Median Reducer (this may take a minute)...")
-    comp = ndvi_m.median(dim="time", skipna=True)
-    
-    comp = comp.where(np.isfinite(comp))
+    print("  -> Dispatching parallel temporal median reduction to Dask cluster...")
+    comp_lazy = ndvi_m.median(dim="time", skipna=True)
+    comp_lazy = comp_lazy.where(np.isfinite(comp_lazy))
+
+    # Execute computation graph
+    comp = comp_lazy.compute()
 
     comp.rio.write_crs(epsg, inplace=True)
     res = cfg["resolution"]
@@ -207,7 +216,7 @@ def build_composite_from_scenes(
     comp.rio.write_transform(transform, inplace=True)
 
     out_tif.parent.mkdir(parents=True, exist_ok=True)
-    print(f"  -> Saving COG to {out_tif.name}...")
+    print(f"  -> Writing Cloud-Optimized GeoTIFF (COG) to {out_tif.name}...")
     comp.rio.to_raster(
         out_tif,
         driver="COG",
@@ -218,33 +227,34 @@ def build_composite_from_scenes(
 
 
 def main():
-    aoi_gdf, aoi_geojson = load_aoi(AOI_PATH)
+    client = init_dask_cluster(n_workers=DASK_WORKERS, threads_per_worker=DASK_THREADS)
 
-    start_year = int(os.getenv("START_YEAR", "2024"))
-    end_year = int(os.getenv("END_YEAR", "2024"))
-    
-    years = range(start_year, end_year + 1)
+    try:
+        aoi_gdf, aoi_geojson = load_aoi(AOI_PATH)
 
-    for y in years:
-        try:
-            ds_name, cfg = select_dataset(y)
-            
-            best_items = gather_scenes_for_year(y, aoi_geojson, cfg)
-            
-            if not best_items:
-                print(f"[{y}] No usable scenes found; skipping.")
-                continue
+        start_year = int(os.getenv("START_YEAR", "2000"))
+        end_year = int(os.getenv("END_YEAR", "2025"))
+        years = range(start_year, end_year + 1)
 
-            out_tif = OUTDIR / f"ndvi_median_{y}.tif"
+        for y in years:
+            try:
+                ds_name, cfg = select_dataset(y)
+                best_items = gather_scenes_for_year(y, aoi_geojson, cfg)
+                
+                if not best_items:
+                    print(f"[{y}] No usable scenes found; skipping.\n")
+                    continue
 
-            build_composite_from_scenes(best_items, aoi_gdf, cfg, out_tif)
-            
-            print(f"[{y}] Success: {out_tif}\n")
-            
-        except Exception as e:
-            print(f"[{y}] FAILED: {str(e)}\n")
+                out_tif = OUTDIR / f"ndvi_median_{y}.tif"
+                build_composite_from_scenes(best_items, aoi_gdf, cfg, out_tif)
+                print(f"[{y}] Success: {out_tif}\n")
+                
+            except Exception as e:
+                print(f"[{y}] FAILED: {str(e)}\n")
 
-    print("Pipeline Complete.")
+        print("Pipeline Complete.")
+    finally:
+        client.close()
 
 
 if __name__ == "__main__":
