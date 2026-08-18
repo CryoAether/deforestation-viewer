@@ -1,6 +1,6 @@
 # Spatiotemporal Satellite Data Engine & Change Viewer
 
-A high-throughput satellite data pipeline and interactive visualization dashboard for multi-decadal environmental trend modeling.
+A high-throughput satellite data pipeline and interactive visualization dashboard for environmental trend modeling.
 
 ## Example Output
 
