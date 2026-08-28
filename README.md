@@ -32,20 +32,3 @@ A high-throughput satellite data pipeline and interactive visualization dashboar
 * **Backend:** Python, FastAPI, Rasterio, NumPy
 * **Frontend:** TypeScript, Vite, CSS
 * **Data Source:** Microsoft Planetary Computer (STAC API)
-
-## Getting Started
-
-```bash
-# 1. Clone & install backend dependencies
-git clone [https://github.com/CryoAether/deforestation-viewer.git](https://github.com/CryoAether/deforestation-viewer.git)
-cd deforestation-viewer
-conda env create -f environment.yml
-conda activate deforestation-viewer
-
-# 2. Run backend API
-uvicorn api.main:app --reload --port 8000
-
-# 3. In a new terminal, run the frontend
-cd web
-npm install
-npm run dev
