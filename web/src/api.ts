@@ -1,43 +1,16 @@
-import { GeoJSONFeatureCollection, BoundsResponse, DeltaResponse } from "./types";
+import { AnalyzeResponse } from "./types";
 
-export async function getYears(): Promise<number[]> {
-  const res = await fetch("/api/years");
-  if (!res.ok) {
-    const text = await res.text();
-    throw new Error(`Failed to load years (${res.status}): ${text}`);
-  }
-  const json = await res.json();
-  return json.years;
-}
-
-export async function fetchAOIGeoJSON(): Promise<GeoJSONFeatureCollection> {
-  const res = await fetch("/api/aoi");
-  if (!res.ok) {
-    throw new Error(`Failed to query PostGIS AOI (${res.status})`);
-  }
-  return await res.json();
-}
-
-export async function buildDelta(fromYear: number, toYear: number): Promise<DeltaResponse> {
-  const res = await fetch("/api/delta", {
+export async function analyzeTown(town: string): Promise<AnalyzeResponse> {
+  const res = await fetch("/api/analyze", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ from_year: fromYear, to_year: toYear }),
+    body: JSON.stringify({ town, baseline_year: 2020, target_year: 2025 }),
   });
 
   if (!res.ok) {
     const text = await res.text();
-    throw new Error(`Failed to build delta (${res.status}): ${text}`);
+    throw new Error(`Analysis failed (${res.status}): ${text}`);
   }
 
-  return await res.json();
-}
-
-export async function getBounds(year: number): Promise<BoundsResponse> {
-  const res = await fetch(`/api/bounds/${year}`);
-  if (!res.ok) {
-    const text = await res.text();
-    throw new Error(`getBounds failed (${res.status}): ${text}`);
-  }
   return await res.json();
 }
